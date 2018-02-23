@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MovieNight</string>
+    
+    
+    <!--The movieDB API JSON node strings-->
+    <string name="RESULTS_ARRAY_NODE">results</string>
+    <string name="VOTE_AVERAGE_NODE">vote_average</string>
+    <string name="TITLE_NODE">title</string>
+    <string name="POSTER_PATH_NODE">poster_path</string>
+    <string name="MOVIE_OVERVIEW_NODE">overview</string>
+    <string name="RELEASE_DATE_NODE">release_date</string>
+
 </resources>

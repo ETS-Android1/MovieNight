@@ -25,4 +25,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    //Used for mocking Android framework
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    // You need that to mock the json objects
+    testCompile 'org.json:json:20140107'
 }
