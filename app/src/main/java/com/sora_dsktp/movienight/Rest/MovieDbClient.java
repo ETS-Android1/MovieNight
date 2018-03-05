@@ -1,15 +1,11 @@
 package com.sora_dsktp.movienight.Rest;
 
-import android.util.Log;
-
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
-import com.sora_dsktp.movienight.MoviesAdapter;
 
 import java.util.ArrayList;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
@@ -32,16 +28,14 @@ public class MovieDbClient
 
     public interface MoviesDBclient
      {
-         //kind is either popular or top_rated
+         //"kind" is either popular or top_rated
          @GET("movie/{kind}/")
-         Call<JsonObjectResultDescription> popularMovies(@Path("kind") String kind, @Query("api_key") String api_key);
-
+         Call<JsonObjectResultDescription> browseMovies(@Path("kind") String kind, @Query("api_key") String api_key);
      }
 
      public static void makeRequest(CustomCallBack<JsonObjectResultDescription> callBack,String QueryKey)
      {
          Retrofit.Builder builder = new Retrofit.Builder();
-
 
          builder.baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
 
@@ -49,13 +43,8 @@ public class MovieDbClient
 
          MovieDbClient.MoviesDBclient client = retrofit.create(MovieDbClient.MoviesDBclient.class);
 
-
-
-         Call<JsonObjectResultDescription> call = client.popularMovies(QueryKey,API_KEY);
+         Call<JsonObjectResultDescription> call = client.browseMovies(QueryKey,API_KEY);
 
          call.enqueue(callBack);
-
      }
-
-
 }

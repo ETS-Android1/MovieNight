@@ -18,5 +18,6 @@
     <string name="top_rated_movies_value">top_rated</string>
     <string name="settings_activity_label_name">Settings</string>
     <string name="sort_order_key">SORT_ORDER</string>
+    <string name="poster_content_description">Image Poster about the movie</string>
 
 </resources>

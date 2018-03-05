@@ -17,18 +17,52 @@ import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.Rest.CustomCallBack;
 import com.sora_dsktp.movienight.Rest.MovieDbClient;
 import com.sora_dsktp.movienight.Settings.SettingsActivity;
+import com.sora_dsktp.movienight.Utils.MoviesAdapter;
 
 import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private MoviesAdapter adapter;
+
+
     private CustomCallBack customCallBack;
     private static final String POPULAR_PATH = "popular";
     public static final String DEBUG_TAG = "#MainActivity.java";
 
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //Get Reference to recyclerView
+        RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_rv);
+        //Instantiate arrayList of movies
+        ArrayList<Movie> movies = new ArrayList<>();
+        // Create an adapter
+        // and a layoutManager
+        // Gridlayout to be specific cause we want grid like layout
+        // and set them both to recycler View
+        MoviesAdapter adapter = new MoviesAdapter(movies,this);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 3);
+        rvMovies.setLayoutManager(mLayoutManager);
+        rvMovies.setAdapter(adapter);
+        //Instantiate a custom Callback object passing in the adapter to populate
+        // with data when we get a response from the Movies DB API
+        customCallBack = new CustomCallBack<JsonObjectResultDescription>(adapter);
+
+
+        //Load Default Sort Order
+        SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
+
+        // Make the request passing in the callback object and the sort Order we want
+        MovieDbClient.makeRequest(customCallBack,sortOrder);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the Action Bar Menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu,menu);
         return true;
@@ -36,71 +70,41 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Menu item id Clicked
         int id = item.getItemId();
         switch (id)
         {
+            // Settings menu clicked
             case R.id.sort_order_option:
             {
+                // Start settings Activity
                 startActivity(new Intent(this, SettingsActivity.class));
             }
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
 
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-
-
-
-        // Lookup the recyclerview in activity layout
-        RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_rv);
-
-        ArrayList<Movie> movies = new ArrayList<>();
-        // Create adapter passing in the sample user data
-        MoviesAdapter adapter = new MoviesAdapter(movies,this);
-        // Attach the adapter to the recyclerview to populate items
-        rvMovies.setAdapter(adapter);
-
-        SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
-        //Register the listener to update the UI in case a preference change occurs
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-        String sortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
-        customCallBack = new CustomCallBack<JsonObjectResultDescription>(adapter);
-        MovieDbClient.makeRequest(customCallBack,sortOrder);
-        // Set layout manager to position the items
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 3);
-
-        rvMovies.setLayoutManager(mLayoutManager);
-        // That's all!
-
-
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
+        // "Sort Order" menu item was changed
         if(key.equals(getResources().getString(R.string.sort_order_key)))
         {
+            // Make the request to the API again using the appropriate "sort_order"
             Log.d(DEBUG_TAG,"Key = "+key);
             MovieDbClient.makeRequest(customCallBack,sharedPreferences.getString(key,getResources().getString(R.string.popular_movies)));
         }
 
     }
+
+
     @Override
     protected void onResume() {
         super.onResume();
+        //Register the shared Preference Listener
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

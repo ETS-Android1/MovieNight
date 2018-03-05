@@ -1,4 +1,4 @@
-package com.sora_dsktp.movienight;
+package com.sora_dsktp.movienight.Utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sora_dsktp.movienight.Model.Movie;
+import com.sora_dsktp.movienight.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
