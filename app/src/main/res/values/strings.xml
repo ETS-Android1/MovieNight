@@ -9,5 +9,14 @@
     <string name="POSTER_PATH_NODE">poster_path</string>
     <string name="MOVIE_OVERVIEW_NODE">overview</string>
     <string name="RELEASE_DATE_NODE">release_date</string>
+    <!--Settings Menu Strings-->
+    <string name="sort_order">Sort Order</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Rated</string>
+
+    <string name="popular_movies_value">popular</string>
+    <string name="top_rated_movies_value">top_rated</string>
+    <string name="settings_activity_label_name">Settings</string>
+    <string name="sort_order_key">SORT_ORDER</string>
 
 </resources>

@@ -1,15 +1,22 @@
 package com.sora_dsktp.movienight.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by SoRa-DSKTP on 23/2/2018.
  */
 
 public class Movie
 {
-    private int movieRating;
+    @SerializedName("vote_average")
+    private float movieRating;
+    @SerializedName("title")
     private String movieTitle;
+    @SerializedName("poster_path")
     private String imagePath;
+    @SerializedName("overview")
     private String movieDescription;
+    @SerializedName("release_date")
     private String releaseDate;
 
     public Movie(int movieRating, String movieTitle, String imagePath, String movieDescription, String releaseDate) {
@@ -20,7 +27,7 @@ public class Movie
         this.releaseDate = releaseDate;
     }
 
-    public int getMovieRating() {
+    public float getMovieRating() {
         return movieRating;
     }
 

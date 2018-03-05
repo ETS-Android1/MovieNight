@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Display Settings">
+
+
+    <ListPreference
+        android:defaultValue="@string/popular_movies_value"
+        android:entries="@array/sort_order_array_names"
+        android:entryValues="@array/sort_order_array_values"
+        android:key="@string/sort_order_key"
+        android:title="@string/sort_order" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
