@@ -1,4 +1,4 @@
-package com.sora_dsktp.movienight;
+package com.sora_dsktp.movienight.Screens;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
 import com.sora_dsktp.movienight.Model.Movie;
+import com.sora_dsktp.movienight.R;
 import com.sora_dsktp.movienight.Rest.CustomCallBack;
 import com.sora_dsktp.movienight.Rest.MovieDbClient;
 import com.sora_dsktp.movienight.Settings.SettingsActivity;
@@ -22,18 +23,18 @@ import com.sora_dsktp.movienight.Utils.MoviesAdapter;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private CustomCallBack customCallBack;
     private static final String POPULAR_PATH = "popular";
-    public static final String DEBUG_TAG = "#MainActivity.java";
+    public static final String DEBUG_TAG = "#MainScreen.java";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_screen_layout);
         //Get Reference to recyclerView
         RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_rv);
         //Instantiate arrayList of movies

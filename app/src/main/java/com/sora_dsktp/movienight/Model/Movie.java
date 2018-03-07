@@ -1,13 +1,19 @@
 package com.sora_dsktp.movienight.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.v4.os.ParcelableCompatCreatorCallbacks;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 
 /**
  * Created by SoRa-DSKTP on 23/2/2018.
  */
 
-public class Movie
-{
+public class Movie implements Parcelable {
+
     @SerializedName("vote_average")
     private float movieRating;
     @SerializedName("title")
@@ -27,11 +33,23 @@ public class Movie
         this.releaseDate = releaseDate;
     }
 
+    @Override
+    public String toString() {
+        return "This movie has a title: " +
+                getMovieTitle() +
+                " With a rating of " +
+                getMovieRating() +
+                " and the following description: " +
+                getMovieDescription() +
+                " and it was release on:" +
+                getReleaseDate();
+    }
+
     public float getMovieRating() {
         return movieRating;
     }
 
-    public void setMovieRating(int movieRating) {
+    public void setMovieRating(float movieRating) {
         this.movieRating = movieRating;
     }
 
@@ -65,5 +83,39 @@ public class Movie
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeFloat(getMovieRating());
+        out.writeString(getMovieTitle());
+        out.writeString(getMovieDescription());
+        out.writeString(getImagePath());
+        out.writeString(getReleaseDate());
+
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
+    {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    private Movie(Parcel in) {
+        setMovieRating(in.readFloat());
+        setMovieTitle(in.readString());
+        setMovieDescription( in.readString());
+        setImagePath(in.readString());
+        setReleaseDate( in.readString());
     }
 }

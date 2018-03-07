@@ -1,15 +1,21 @@
 package com.sora_dsktp.movienight.Utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
+import com.sora_dsktp.movienight.Screens.DetailsScreen;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,13 +26,10 @@ import java.util.ArrayList;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
-//    / Store a member variable for the contacts
+    public static final String DEBUG_TAG = "#MoviesAdapter.java";
     private ArrayList<Movie> mMovies;
-    // Store the context for easy access
     private Context mContext;
     private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342/";
-
-
 
     public MoviesAdapter(ArrayList<Movie> mMovies, Context mContext) {
         this.mMovies = mMovies;
@@ -43,7 +46,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.item_movie,parent,false);
-        return new MovieViewHolder(view);
+        MovieViewHolder viewHolder = new MovieViewHolder(view);
+        return viewHolder;
     }
 
     @Override
@@ -57,23 +61,40 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         Picasso.with(mContext).load(IMAGE_BASE_URL+movie.getImagePath()).into(holder.mMoviePoster);
     }
 
-
-
     @Override
     public int getItemCount() {
         return mMovies.size();
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+
+
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mMovieTitle;
         public ImageView mMoviePoster;
 
-        public MovieViewHolder(View itemView) {
+        public MovieViewHolder(View itemView)
+        {
             super(itemView);
-
             mMovieTitle = (TextView) itemView.findViewById(R.id.item_movie_title);
             mMoviePoster = (ImageView) itemView.findViewById(R.id.item_movie_poster);
+
+            itemView.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View v)
+        {
+
+            // Start the activity containing
+            // the movie user clicked from the list
+            Intent openDetailScreen = new Intent(mContext, DetailsScreen.class);
+            Movie movieToSend = mMovies.get(getAdapterPosition());
+            if(movieToSend == null) Log.e(DEBUG_TAG,"Movie is empty ");
+            Log.d(DEBUG_TAG,movieToSend.toString());
+            openDetailScreen.putExtra("data",movieToSend);
+            mContext.startActivity(openDetailScreen);
         }
     }
 
