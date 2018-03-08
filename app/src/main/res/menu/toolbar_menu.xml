@@ -2,7 +2,7 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/sort_order"
+    <item android:title="@string/sort_order_toolbar_action"
         android:id="@+id/sort_order_option"
         app:showAsAction="never"
         />

@@ -9,15 +9,27 @@
     <string name="POSTER_PATH_NODE">poster_path</string>
     <string name="MOVIE_OVERVIEW_NODE">overview</string>
     <string name="RELEASE_DATE_NODE">release_date</string>
+
     <!--Settings Menu Strings-->
-    <string name="sort_order">Sort Order</string>
+    <string name="settings_activity_label_name">Settings</string>
     <string name="popular_movies">Popular Movies</string>
     <string name="top_rated_movies">Top Rated</string>
+    <string name="preference_category_title_display_settings">Display Settings</string>
 
-    <string name="popular_movies_value">popular</string>
-    <string name="top_rated_movies_value">top_rated</string>
-    <string name="settings_activity_label_name">Settings</string>
-    <string name="sort_order_key">SORT_ORDER</string>
-    <string name="poster_content_description">Image Poster about the movie</string>
+    <!--Sorting related Strings-->
+    <string name="sort_order_key">sort_order_key</string>
+    <string name="sort_popular_movies_value">popular</string>
+    <string name="sort_top_rated_movies_value">top_rated</string>
+
+    <string name="sort_order_toolbar_action">Sort Order</string>
+    <string name="movie_poster_content_description">This is a movie poster</string>
+
+    <!--Details Screen TextView strings-->
+    <string name="tv_movie_title_label_text">Title</string>
+    <string name="tv_movie_rating_label_text">Rating</string>
+    <string name="tv_release_date_label_text">Release Date</string>
+    <string name="tv_movie_description_label_text">Description</string>
+
+
 
 </resources>

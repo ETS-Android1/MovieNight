@@ -9,8 +9,8 @@
 
     <!--Value of the names selected-->
     <array name="sort_order_array_values">
-        <item>@string/popular_movies_value</item>
-        <item>@string/top_rated_movies_value</item>
+        <item>@string/sort_popular_movies_value</item>
+        <item>@string/sort_top_rated_movies_value</item>
     </array>
 
 </resources>

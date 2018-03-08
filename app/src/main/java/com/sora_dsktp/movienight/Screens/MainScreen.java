@@ -1,16 +1,21 @@
 package com.sora_dsktp.movienight.Screens;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
 import com.sora_dsktp.movienight.Model.Movie;
@@ -26,7 +31,9 @@ import java.util.ArrayList;
 public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private CustomCallBack customCallBack;
+    private CustomCallBack mCustomCallBack;
+    private BroadcastReceiver mBroadcastReceiver;
+    private String mSortOrder;
     private static final String POPULAR_PATH = "popular";
     public static final String DEBUG_TAG = "#MainScreen.java";
 
@@ -49,16 +56,53 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         rvMovies.setAdapter(adapter);
         //Instantiate a custom Callback object passing in the adapter to populate
         // with data when we get a response from the Movies DB API
-        customCallBack = new CustomCallBack<JsonObjectResultDescription>(adapter);
+        mCustomCallBack = new CustomCallBack<JsonObjectResultDescription>(adapter);
 
 
         //Load Default Sort Order
         SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
-        String sortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
+        mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
 
-        // Make the request passing in the callback object and the sort Order we want
-        MovieDbClient.makeRequest(customCallBack,sortOrder);
+        // Set the toolbar title
+        setActionBarTitle(mSortOrder);
+
+        //Check to See if we have internet and then fetch the data
+        createInternetBroadcastReceiver();
+
     }
+
+    private void createInternetBroadcastReceiver() {
+        mBroadcastReceiver= new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetwork = null;
+                activeNetwork = connectivityManager.getActiveNetworkInfo();
+                if(activeNetwork != null)
+                {
+                    if(activeNetwork.isConnected())
+                    {
+                        Toast.makeText(context,"Yayyy we have internet",Toast.LENGTH_LONG).show();
+                        fetchMovies();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(context,"Ooopsy we lost internet check your connection ",Toast.LENGTH_LONG).show();
+                }
+
+            }
+        };
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        this.registerReceiver(mBroadcastReceiver,filter);
+
+    }
+    public void fetchMovies()
+    {
+        // Make the request passing in the callback object and the sort Order we want
+        MovieDbClient.makeRequest(mCustomCallBack, mSortOrder);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -93,8 +137,10 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         if(key.equals(getResources().getString(R.string.sort_order_key)))
         {
             // Make the request to the API again using the appropriate "sort_order"
-            Log.d(DEBUG_TAG,"Key = "+key);
-            MovieDbClient.makeRequest(customCallBack,sharedPreferences.getString(key,getResources().getString(R.string.popular_movies)));
+            String sortOrder = sharedPreferences.getString(key, getResources().getString(R.string.popular_movies));
+            MovieDbClient.makeRequest(mCustomCallBack, sortOrder);
+            //Remember to change the toolbar title
+            setActionBarTitle(sortOrder);
         }
 
     }
@@ -111,5 +157,24 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         super.onDestroy();
         //Unregister the listener
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+        //Destroy Internet broadcast Receiver
+        this.unregisterReceiver(mBroadcastReceiver);
+    }
+
+    public void setActionBarTitle(String sortOrder) {
+        //Set the title according to the sort order
+        switch (sortOrder)
+        {
+            case "popular":
+            {
+                getSupportActionBar().setTitle("Popular Movies");
+                break;
+            }
+            case "top_rated":
+            {
+                getSupportActionBar().setTitle("Top Rated Movies");
+                break;
+            }
+        }
     }
 }

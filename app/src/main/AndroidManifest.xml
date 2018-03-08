@@ -3,6 +3,7 @@
     package="com.sora_dsktp.movienight">
 
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
@@ -29,6 +30,9 @@
         </activity>
         <!--Detail Screen Activity-->
         <activity android:name=".Screens.DetailsScreen" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

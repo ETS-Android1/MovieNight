@@ -53,6 +53,8 @@ public class DetailsScreen extends AppCompatActivity
             mReleaseDateTextView.setText(moviePassed.getReleaseDate());
             mDescriptionTextView.setText(moviePassed.getMovieDescription());
 
+            getSupportActionBar().setTitle(moviePassed.getMovieTitle());
+
         }
 
     }
