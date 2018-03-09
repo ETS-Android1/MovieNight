@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
@@ -34,6 +35,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     private CustomCallBack mCustomCallBack;
     private BroadcastReceiver mBroadcastReceiver;
     private String mSortOrder;
+    private MoviesAdapter mAdapter;
     private static final String POPULAR_PATH = "popular";
     public static final String DEBUG_TAG = "#MainScreen.java";
 
@@ -50,13 +52,13 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // and a layoutManager
         // Gridlayout to be specific cause we want grid like layout
         // and set them both to recycler View
-        MoviesAdapter adapter = new MoviesAdapter(movies,this);
+        mAdapter = new MoviesAdapter(movies,this);
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         rvMovies.setLayoutManager(mLayoutManager);
-        rvMovies.setAdapter(adapter);
+        rvMovies.setAdapter(mAdapter);
         //Instantiate a custom Callback object passing in the adapter to populate
         // with data when we get a response from the Movies DB API
-        mCustomCallBack = new CustomCallBack<JsonObjectResultDescription>(adapter);
+        mCustomCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter, (RelativeLayout) findViewById(R.id.error_display_layout));
 
 
         //Load Default Sort Order
@@ -76,7 +78,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
             @Override
             public void onReceive(Context context, Intent intent) {
                 ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork = null;
+                NetworkInfo activeNetwork;
                 activeNetwork = connectivityManager.getActiveNetworkInfo();
                 if(activeNetwork != null)
                 {
@@ -144,7 +146,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         }
 
     }
-
 
     @Override
     protected void onResume() {
