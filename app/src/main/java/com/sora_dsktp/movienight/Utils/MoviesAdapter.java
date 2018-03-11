@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
+
 /**
  * Created by SoRa-DSKTP on 24/2/2018.
  */
@@ -29,7 +31,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public static final String DEBUG_TAG = "#MoviesAdapter.java";
     private ArrayList<Movie> mMovies;
     private Context mContext;
-    private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342/";
 
     public MoviesAdapter(ArrayList<Movie> mMovies, Context mContext) {
         this.mMovies = mMovies;
@@ -63,6 +64,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     @Override
     public int getItemCount() {
+        Log.d(DEBUG_TAG,"Item Size = " + mMovies.size());
         return mMovies.size();
     }
 
@@ -86,14 +88,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         @Override
         public void onClick(View v)
         {
-
             // Start the activity containing
             // the movie user clicked from the list
             Intent openDetailScreen = new Intent(mContext, DetailsScreen.class);
             Movie movieToSend = mMovies.get(getAdapterPosition());
             if(movieToSend == null) Log.e(DEBUG_TAG,"Movie is empty ");
             Log.d(DEBUG_TAG,movieToSend.toString());
-            openDetailScreen.putExtra("data",movieToSend);
+            openDetailScreen.putExtra(mContext.getString(R.string.EXTRA_KEY),movieToSend);
             mContext.startActivity(openDetailScreen);
         }
     }

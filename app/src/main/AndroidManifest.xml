@@ -29,7 +29,9 @@
             android:label="@string/settings_activity_label_name">
         </activity>
         <!--Detail Screen Activity-->
-        <activity android:name=".Screens.DetailsScreen" />
+        <activity
+            android:name=".Screens.DetailsScreen"
+            android:parentActivityName=".Screens.MainScreen"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

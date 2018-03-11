@@ -21,15 +21,22 @@
     <string name="sort_popular_movies_value">popular</string>
     <string name="sort_top_rated_movies_value">top_rated</string>
 
+    <!--Toolbar Action Strings-->
     <string name="sort_order_toolbar_action">Sort Order</string>
+
+    <!--ImageView Content Descpription-->
     <string name="movie_poster_content_description">This is a movie poster</string>
 
     <!--Details Screen TextView strings-->
-    <string name="tv_movie_title_label_text">Title</string>
-    <string name="tv_movie_rating_label_text">Rating</string>
-    <string name="tv_release_date_label_text">Release Date</string>
+    <string name="tv_movie_title_label_text">Title:</string>
+    <string name="tv_movie_rating_label_text">Rating:</string>
+    <string name="tv_release_date_label_text">Release Date:</string>
     <string name="tv_movie_description_label_text">Description</string>
 
+    <!--Passing Intent to details Activity-->
+    <string name="EXTRA_KEY">data</string>
+    <string name="empty_view_message">Movie list is empty , try connecting to the internet</string>
+    <string name="no_connection_message">No Internet Connection</string>
 
 
 </resources>

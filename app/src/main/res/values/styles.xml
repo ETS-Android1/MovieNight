@@ -13,19 +13,23 @@
 
     <!--This is a style for TextView labels in Details Screen-->
     <style name="detailScreenLayout_textviews_labels">
-        <item name="android:layout_marginTop">@dimen/details_screen_textviews_top_margin</item>
         <item name="android:textSize">@dimen/details_screen_textviews_label_textSize</item>
         <item name="android:fontFamily">@font/cormorant</item>
-        <!--<item name="android:fontStyle">normal</item>-->
 
     </style>
 
     <!--This is a style for TextView values in Details Screen-->
     <style name="detailScreenLayout_textviews_values">
-        <item name="android:layout_marginTop">@dimen/details_screen_textviews_top_margin</item>
         <item name="android:textSize">@dimen/details_screen_textviews_values_textSize</item>
         <item name="android:fontFamily">@font/delius</item>
 
     </style>
 
+    <!--Item Movie xml Styles-->
+    <style name="item_movie_textview">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:fontFamily">@font/alice</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/item_view_textview_textSize</item>
+    </style>
 </resources>

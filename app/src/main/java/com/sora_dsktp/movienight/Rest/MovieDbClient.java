@@ -1,9 +1,6 @@
 package com.sora_dsktp.movienight.Rest;
 
-import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -12,19 +9,17 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+import static com.sora_dsktp.movienight.Utils.Constants.API_KEY;
+import static com.sora_dsktp.movienight.Utils.Constants.BASE_URL;
+
 /**
  * Created by SoRa-DSKTP on 23/2/2018.
  */
 
 public class MovieDbClient
 {
-    private static final String API_KEY = "dc6d8616c929e061cf07b295eb8748a3";
-
-    private static final String BASE_URL = "https://api.themoviedb.org/3/";
 
     private static final String DEBUG_TAG = "#NetWorkUtils.java";
-    private static  ArrayList<Movie> MoviesList;
-
 
     public interface MoviesDBclient
      {

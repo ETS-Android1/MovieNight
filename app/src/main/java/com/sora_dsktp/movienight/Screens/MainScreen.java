@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,16 +29,23 @@ import com.sora_dsktp.movienight.Utils.MoviesAdapter;
 
 import java.util.ArrayList;
 
+import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
+
 
 public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private CustomCallBack mCustomCallBack;
     private BroadcastReceiver mBroadcastReceiver;
-    private String mSortOrder;
+    private static String mSortOrder;
     private MoviesAdapter mAdapter;
-    private static final String POPULAR_PATH = "popular";
+    private IntentFilter mIntentFilter;
+    private static boolean sWeHaveInternet = true;
+    // see below the broadcast receiver method for this
+    // variable usage
+    private static boolean mFirstTimeFetch = true;
     public static final String DEBUG_TAG = "#MainScreen.java";
+    private static boolean sUineedsUpdate = true;
 
 
     @Override
@@ -60,16 +68,14 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // with data when we get a response from the Movies DB API
         mCustomCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter, (RelativeLayout) findViewById(R.id.error_display_layout));
 
-
-        //Load Default Sort Order
-        SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
-        mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
-
         // Set the toolbar title
-        setActionBarTitle(mSortOrder);
+        setActionBarTitle();
 
         //Check to See if we have internet and then fetch the data
+        fetchMovies();
+        //Create and register the Connectivity broadcast receiver
         createInternetBroadcastReceiver();
+        this.registerReceiver(mBroadcastReceiver,mIntentFilter);
 
     }
 
@@ -84,25 +90,46 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 {
                     if(activeNetwork.isConnected())
                     {
-                        Toast.makeText(context,"Yayyy we have internet",Toast.LENGTH_LONG).show();
-                        fetchMovies();
+                        Toast.makeText(getApplicationContext(),"We have internet",Toast.LENGTH_SHORT).show();
+                        sWeHaveInternet = true;
+                        if(UIneedsToBeUpdated()) fetchMovies();
                     }
                 }
                 else
                 {
-                    Toast.makeText(context,"Ooopsy we lost internet check your connection ",Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.no_connection_message,Toast.LENGTH_LONG).show();
+                    sWeHaveInternet = false;
                 }
 
             }
         };
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        this.registerReceiver(mBroadcastReceiver,filter);
+        mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
 
     }
     public void fetchMovies()
     {
-        // Make the request passing in the callback object and the sort Order we want
-        MovieDbClient.makeRequest(mCustomCallBack, mSortOrder);
+        // If we have internet connection
+        // make the request passing in the callback object and the sort Order we want
+        //Load Default Sort Order
+        SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
+        if(UIneedsToBeUpdated())
+        {
+            MovieDbClient.makeRequest(mCustomCallBack, mSortOrder);
+            sUineedsUpdate = false;
+        }
+    }
+
+    public boolean UIneedsToBeUpdated()
+    {
+        if(sWeHaveInternet && sUineedsUpdate && mFirstTimeFetch)
+        {
+            mFirstTimeFetch = false;
+            return true;
+        }
+        else if(sWeHaveInternet && sUineedsUpdate) return true;
+        else return false;
     }
 
 
@@ -138,11 +165,11 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // "Sort Order" menu item was changed
         if(key.equals(getResources().getString(R.string.sort_order_key)))
         {
+            sUineedsUpdate = true;
             // Make the request to the API again using the appropriate "sort_order"
-            String sortOrder = sharedPreferences.getString(key, getResources().getString(R.string.popular_movies));
-            MovieDbClient.makeRequest(mCustomCallBack, sortOrder);
+            fetchMovies();
             //Remember to change the toolbar title
-            setActionBarTitle(sortOrder);
+            setActionBarTitle();
         }
 
     }
@@ -152,6 +179,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         super.onResume();
         //Register the shared Preference Listener
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
     }
     @Override
     protected void onDestroy() {
@@ -160,11 +188,15 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         //Destroy Internet broadcast Receiver
         this.unregisterReceiver(mBroadcastReceiver);
+        Log.d(DEBUG_TAG,"On Destroy called");
     }
 
-    public void setActionBarTitle(String sortOrder) {
+    public void setActionBarTitle() {
+        //Load Default Sort Order
+        SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
+        mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
         //Set the title according to the sort order
-        switch (sortOrder)
+        switch (mSortOrder)
         {
             case "popular":
             {

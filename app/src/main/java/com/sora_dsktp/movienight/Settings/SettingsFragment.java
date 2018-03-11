@@ -17,6 +17,4 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings_fragment_items);
     }
-
-
 }

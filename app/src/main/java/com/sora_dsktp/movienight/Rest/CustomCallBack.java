@@ -44,7 +44,7 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
             // Hide the error layout from the user
             mRelativeLayout.setVisibility(View.GONE);
         }
-        Log.d("Debug","We got a response from the API");
+        Log.d(DEBUG_TAG,"We got a response from the API");
     }
 
     @Override
