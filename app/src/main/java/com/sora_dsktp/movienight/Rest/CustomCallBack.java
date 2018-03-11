@@ -52,6 +52,5 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
     {
         t.printStackTrace();
         Log.e(DEBUG_TAG,"There was an error fetching data from the API");
-
     }
 }

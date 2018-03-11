@@ -37,15 +37,13 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
 
     private CustomCallBack mCustomCallBack;
     private BroadcastReceiver mBroadcastReceiver;
-    private static String mSortOrder;
     private MoviesAdapter mAdapter;
     private IntentFilter mIntentFilter;
-    private static boolean sWeHaveInternet = true;
-    // see below the broadcast receiver method for this
-    // variable usage
-    private static boolean mFirstTimeFetch = true;
-    public static final String DEBUG_TAG = "#MainScreen.java";
-    private static boolean sUineedsUpdate = true;
+    private  String mSortOrder;
+    private  boolean mWeHaveInternet = true;
+    private  boolean mFirstTimeFetch = true;
+    private  boolean mUineedsUpdate = true;
+    private static final String DEBUG_TAG = "#MainScreen.java";
 
 
     @Override
@@ -71,8 +69,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // Set the toolbar title
         setActionBarTitle();
 
-        //Check to See if we have internet and then fetch the data
-        fetchMovies();
         //Create and register the Connectivity broadcast receiver
         createInternetBroadcastReceiver();
         this.registerReceiver(mBroadcastReceiver,mIntentFilter);
@@ -91,14 +87,15 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                     if(activeNetwork.isConnected())
                     {
                         Toast.makeText(getApplicationContext(),"We have internet",Toast.LENGTH_SHORT).show();
-                        sWeHaveInternet = true;
+                        mWeHaveInternet = true;
+                        //Check to See if we have internet and then fetch the data
                         if(UIneedsToBeUpdated()) fetchMovies();
                     }
                 }
                 else
                 {
                     Toast.makeText(context, R.string.no_connection_message,Toast.LENGTH_LONG).show();
-                    sWeHaveInternet = false;
+                    mWeHaveInternet = false;
                 }
 
             }
@@ -117,18 +114,21 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         if(UIneedsToBeUpdated())
         {
             MovieDbClient.makeRequest(mCustomCallBack, mSortOrder);
-            sUineedsUpdate = false;
+            mUineedsUpdate = false;
         }
     }
 
     public boolean UIneedsToBeUpdated()
     {
-        if(sWeHaveInternet && sUineedsUpdate && mFirstTimeFetch)
+        Log.d(DEBUG_TAG,"Value of mWeHaveInternet = " + mWeHaveInternet +
+                "\n" + "Value of mUiNeedsUpdate = " + mUineedsUpdate + "\n" +
+                      "Value of mFirstTimeFetch = " + mFirstTimeFetch);
+        if(mWeHaveInternet && mUineedsUpdate && mFirstTimeFetch)
         {
             mFirstTimeFetch = false;
             return true;
         }
-        else if(sWeHaveInternet && sUineedsUpdate) return true;
+        else if(mWeHaveInternet && mUineedsUpdate) return true;
         else return false;
     }
 
@@ -165,13 +165,12 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // "Sort Order" menu item was changed
         if(key.equals(getResources().getString(R.string.sort_order_key)))
         {
-            sUineedsUpdate = true;
+            mUineedsUpdate = true;
             // Make the request to the API again using the appropriate "sort_order"
             fetchMovies();
             //Remember to change the toolbar title
             setActionBarTitle();
         }
-
     }
 
     @Override
