@@ -94,7 +94,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                     // check to see if we need to update the ui
                     if(activeNetwork.isConnected())
                     {
-                        Toast.makeText(getApplicationContext(),"We have internet",Toast.LENGTH_SHORT).show();
                         mWeHaveInternet = true;
                         //Check to See if we have internet and then fetch the data
                         if(UIneedsToBeUpdated()) fetchMovies();
