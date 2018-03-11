@@ -1,3 +1,8 @@
+<!--
+  ~ Copyright © 2018 by Georgios Kostogloudis
+  ~ All rights reserved.
+  -->
+
 <resources>
 
     <!-- Base application theme. -->
@@ -14,7 +19,7 @@
     <!--This is a style for TextView labels in Details Screen-->
     <style name="detailScreenLayout_textviews_labels">
         <item name="android:textSize">@dimen/details_screen_textviews_label_textSize</item>
-        <item name="android:fontFamily">@font/cormorant</item>
+        <item name="android:fontFamily">@font/alice</item>
 
     </style>
 

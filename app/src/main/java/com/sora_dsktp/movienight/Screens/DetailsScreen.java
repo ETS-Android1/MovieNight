@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2018 by Georgios Kostogloudis
+ * All rights reserved.
+ */
+
 package com.sora_dsktp.movienight.Screens;
 
 import android.content.Intent;
@@ -19,12 +24,21 @@ import java.util.ArrayList;
 import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
 
 /**
- * Created by SoRa-DSKTP on 6/3/2018.
+ This file created by Georgios Kostogloudis
+ and was last modified on 6/3/2018.
+ The name of the project is MovieNight and it was created as part of
+ UDACITY ND programm.
  */
 
+/**
+ * This class represent the detail screen of a movie
+ * get's a movie trought intent
+ * and set's the values of the textview's and the imageview on
+ * this layout
+ */
 public class DetailsScreen extends AppCompatActivity
 {
-    public static final String DEBUG_TAG = "#DetailsScreen.java";
+    private static final String DEBUG_TAG = "#DetailsScreen.java";
     private TextView mTitleTextView,mRatingTextView,mReleaseDateTextView,mDescriptionTextView;
     private ImageView mPosterImageView;
 
@@ -62,7 +76,6 @@ public class DetailsScreen extends AppCompatActivity
             mDescriptionTextView.setText(moviePassed.getMovieDescription());
             // Set the toolbar title to the movie title
             getSupportActionBar().setTitle(moviePassed.getMovieTitle());
-
         }
 
     }

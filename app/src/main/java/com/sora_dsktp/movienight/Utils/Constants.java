@@ -1,9 +1,20 @@
+/*
+ * Copyright © 2018 by Georgios Kostogloudis
+ * All rights reserved.
+ */
+
 package com.sora_dsktp.movienight.Utils;
 
 /**
- * Created by SoRa-DSKTP on 10/3/2018.
+ This file created by Georgios Kostogloudis
+ and was last modified on 10/3/2018.
+ The name of the project is MovieNight and it was created as part of
+ UDACITY ND programm.
  */
 
+/**
+ * Public class containing all the constants used across the project
+ */
 public class Constants
 {
     // Constants used across the Application

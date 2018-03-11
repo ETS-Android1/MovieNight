@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2018 by Georgios Kostogloudis
+ * All rights reserved.
+ */
+
 package com.sora_dsktp.movienight.Screens;
 
 import android.content.BroadcastReceiver;
@@ -65,25 +70,28 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         //Instantiate a custom Callback object passing in the adapter to populate
         // with data when we get a response from the Movies DB API
         mCustomCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter, (RelativeLayout) findViewById(R.id.error_display_layout));
-
         // Set the toolbar title
         setActionBarTitle();
-
         //Create and register the Connectivity broadcast receiver
         createInternetBroadcastReceiver();
-        this.registerReceiver(mBroadcastReceiver,mIntentFilter);
-
     }
 
+    /**
+     * This method create's and registers the broadcast receiver.
+     * This broadcast is called when a connectivity change occurs
+     */
     private void createInternetBroadcastReceiver() {
         mBroadcastReceiver= new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo activeNetwork;
+                // Get the network info
                 activeNetwork = connectivityManager.getActiveNetworkInfo();
                 if(activeNetwork != null)
                 {
+                    // If we have Internet connectivity
+                    // check to see if we need to update the ui
                     if(activeNetwork.isConnected())
                     {
                         Toast.makeText(getApplicationContext(),"We have internet",Toast.LENGTH_SHORT).show();
@@ -92,6 +100,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                         if(UIneedsToBeUpdated()) fetchMovies();
                     }
                 }
+                // If we lose Internet connectivity show a Toast message
                 else
                 {
                     Toast.makeText(context, R.string.no_connection_message,Toast.LENGTH_LONG).show();
@@ -100,10 +109,16 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
 
             }
         };
+        // Create the intent filter for Connectivity Change
+        // and register the receiver
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-
-
+        this.registerReceiver(mBroadcastReceiver,mIntentFilter);
     }
+
+    /**
+     * This method makes the request to the Movies db
+     * if needed
+     */
     public void fetchMovies()
     {
         // If we have internet connection
@@ -118,21 +133,34 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         }
     }
 
+
+    /**
+     * Method for determining if we need to UpdateTheUi
+     * @return true or false depending the outcome of the if/else statements
+     */
     public boolean UIneedsToBeUpdated()
     {
         Log.d(DEBUG_TAG,"Value of mWeHaveInternet = " + mWeHaveInternet +
                 "\n" + "Value of mUiNeedsUpdate = " + mUineedsUpdate + "\n" +
                       "Value of mFirstTimeFetch = " + mFirstTimeFetch);
+        // If we have internet and the Ui needs update and its the first time the user opens the app
+        // the return true and set the mFirstTimeFetch variable to false.
         if(mWeHaveInternet && mUineedsUpdate && mFirstTimeFetch)
         {
             mFirstTimeFetch = false;
             return true;
         }
+        // If we wave internet and the UI needs  update then return true
         else if(mWeHaveInternet && mUineedsUpdate) return true;
+        // In any other case return false
         else return false;
     }
 
-
+    /**
+     * This method inflates the toolbar menu items
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -142,6 +170,11 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         return true;
     }
 
+    /**
+     * This method is called when a toolbar item is clicked
+     * @param item The item which was clicked
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Menu item id Clicked
@@ -158,7 +191,12 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         return super.onOptionsItemSelected(item);
     }
 
-
+    /**
+     * This method is called whenever a preference  change it's value
+     * for example if a user select's top rated movies/popular sort
+     * @param sharedPreferences sharedPreferences object
+     * @param key The key to find which preference has changed
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
@@ -180,6 +218,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
 
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -190,6 +229,10 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         Log.d(DEBUG_TAG,"On Destroy called");
     }
 
+    /**
+     * Method for setting the ToolBar title
+     * according to the sort order preference
+     */
     public void setActionBarTitle() {
         //Load Default Sort Order
         SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);

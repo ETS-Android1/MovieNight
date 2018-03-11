@@ -1,3 +1,8 @@
+/*
+ * Copyright © 2018 by Georgios Kostogloudis
+ * All rights reserved.
+ */
+
 package com.sora_dsktp.movienight.Model;
 
 import android.os.Parcel;
@@ -9,9 +14,17 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
- * Created by SoRa-DSKTP on 23/2/2018.
+ This file created by Georgios Kostogloudis on 23/2/2018
+ and was last modified on 23/2/2018.
+ The name of the project is MovieNight and it was created as part of
+ UDACITY ND programm.
  */
 
+/**
+ * This is the model we use
+ * to represent the movies we get from the
+ * API
+ */
 public class Movie implements Parcelable {
 
     @SerializedName("vote_average")
@@ -25,6 +38,14 @@ public class Movie implements Parcelable {
     @SerializedName("release_date")
     private String releaseDate;
 
+    /**
+     * Default Movie constructor
+     * @param movieRating represents the voting average of the movie
+     * @param movieTitle represents the movie title
+     * @param imagePath represents the path to the movie poster
+     * @param movieDescription represents a movie synopsis
+     * @param releaseDate represents the release date of the movie
+     */
     public Movie(int movieRating, String movieTitle, String imagePath, String movieDescription, String releaseDate) {
         this.movieRating = movieRating;
         this.movieTitle = movieTitle;
@@ -33,6 +54,10 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    /**
+     *
+     * @return returns a represantion of the movie object as a string
+     */
     @Override
     public String toString() {
         return "This movie has a title: " +
@@ -90,7 +115,12 @@ public class Movie implements Parcelable {
         return 0;
     }
 
-
+    /**
+     * This method is used to write a movie object into a Parcel object
+     * so we can pass later on our activity a movie object via intent.passExtra()
+     * @param out the Parcel object to write our object values
+     * @param flags any flags we want to add
+     */
     public void writeToParcel(Parcel out, int flags) {
         out.writeFloat(getMovieRating());
         out.writeString(getMovieTitle());
@@ -111,6 +141,12 @@ public class Movie implements Parcelable {
         }
     };
 
+    /**
+     * This Movie constructor creates a Movie object from  a Parcel object as a parameter
+     * and read's the values for a Movie object in the same
+     * order we wrote in writeToParcel() method
+     * @param in the Parcel object that contains an Movie object
+     */
     private Movie(Parcel in) {
         setMovieRating(in.readFloat());
         setMovieTitle(in.readString());

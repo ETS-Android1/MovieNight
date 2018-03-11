@@ -3,7 +3,6 @@
 
 
     <!--Details Screen dimensions-->
-    <dimen name="details_screen_textviews_top_margin">16dp</dimen>
     <dimen name="details_screen_textviews_label_textSize">20sp</dimen>
     <dimen name="details_screen_textviews_values_textSize">15sp</dimen>
     <dimen name="details_screen_textviews_description_textSize">18sp</dimen>
