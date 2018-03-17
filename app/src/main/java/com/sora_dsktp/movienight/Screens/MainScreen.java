@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
 
 
-public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener,MoviesAdapter.OnMovieClickedInterface{
 
 
     private CustomCallBack mCustomCallBack;
@@ -63,7 +63,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // and a layoutManager
         // Gridlayout to be specific cause we want grid like layout
         // and set them both to recycler View
-        mAdapter = new MoviesAdapter(movies,this);
+        mAdapter = new MoviesAdapter(movies,this,this);
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         rvMovies.setLayoutManager(mLayoutManager);
         rvMovies.setAdapter(mAdapter);
@@ -250,5 +250,23 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 break;
             }
         }
+    }
+
+    /**
+     * Method for handling click's on RecyclerView
+     * It starts the details view
+     * with the appropriate data
+     * @param moviePosition adapter position clicked
+     * @param movieClicked Movie object to send in details Activity
+     */
+    @Override
+    public void onMovieClicked(int moviePosition,Movie movieClicked) {
+        //Start the activity containing
+        //the movie user clicked from the list
+        Intent openDetailScreen = new Intent(getApplicationContext(), DetailsScreen.class);
+        if(movieClicked == null) Log.e(DEBUG_TAG,"Movie is empty ");
+        Log.d(DEBUG_TAG,movieClicked.toString());
+        openDetailScreen.putExtra(this.getString(R.string.EXTRA_KEY),movieClicked);
+        startActivity(openDetailScreen);
     }
 }

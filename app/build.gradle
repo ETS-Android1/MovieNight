@@ -1,5 +1,37 @@
 apply plugin: 'com.android.application'
 
+
+// Begin of reading the sensitive data
+
+def noKeyFound = '"NO_KEY_FOUND"'
+def theMovieDbApiKey = noKeyFound
+
+def sensitiveDataFile = file('../sensitive_data.txt')
+def Properties sensitiveData = new Properties()
+
+
+if (sensitiveDataFile.canRead())
+{
+    // Read the sensitive data from file sensitive_data.txt
+    sensitiveData.load(new FileInputStream(sensitiveDataFile))
+
+    if (sensitiveData != null)
+    {
+        if (sensitiveData.containsKey('theMovieDbApiKey'))
+        {
+            theMovieDbApiKey = sensitiveData['theMovieDbApiKey']
+        }
+    }
+}
+
+// In this section a reviewer can insert directly his own API KEY
+if (theMovieDbApiKey == noKeyFound)
+{
+    theMovieDbApiKey = '"REVIEWERS_THEMOVIEDB_API_KEY_GOES_HERE"'
+}
+// End of reading the sensitive data
+
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -9,6 +41,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // add a Constant Field for the Movies DB API
+        buildConfigField "String", "THEMOVIEDB_API_KEY", theMovieDbApiKey
     }
     buildTypes {
         release {

@@ -39,18 +39,27 @@ import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
+    // Simple interface to implement on main activity
+    // to delegate the click on a movie
+    public interface OnMovieClickedInterface{
+         void onMovieClicked(int moviePosition,Movie movie);
+    }
+
     public static final String DEBUG_TAG = "#MoviesAdapter.java";
     private ArrayList<Movie> mMovies;
     private Context mContext;
+    private OnMovieClickedInterface mClickListener;
+
 
     /**
      * Default constructor for the adapter
      * @param mMovies ArrayList of movie objects
      * @param mContext Context object used to get reference to resources
      */
-    public MoviesAdapter(ArrayList<Movie> mMovies, Context mContext) {
+    public MoviesAdapter(ArrayList<Movie> mMovies, Context mContext,OnMovieClickedInterface listener) {
         this.mMovies = mMovies;
         this.mContext = mContext;
+        this.mClickListener = listener;
     }
 
     /**
@@ -133,14 +142,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         @Override
         public void onClick(View v)
         {
-            // Start the activity containing
-            // the movie user clicked from the list
-            Intent openDetailScreen = new Intent(mContext, DetailsScreen.class);
-            Movie movieToSend = mMovies.get(getAdapterPosition());
-            if(movieToSend == null) Log.e(DEBUG_TAG,"Movie is empty ");
-            Log.d(DEBUG_TAG,movieToSend.toString());
-            openDetailScreen.putExtra(mContext.getString(R.string.EXTRA_KEY),movieToSend);
-            mContext.startActivity(openDetailScreen);
+            // Sent the movie clicked via the listener
+            mClickListener.onMovieClicked(getAdapterPosition(),mMovies.get(getAdapterPosition()));
         }
     }
 
