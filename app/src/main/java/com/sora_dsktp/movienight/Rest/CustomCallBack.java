@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
 import com.sora_dsktp.movienight.Model.Movie;
+import com.sora_dsktp.movienight.Screens.MainScreen;
 import com.sora_dsktp.movienight.Utils.MoviesAdapter;
 
 import java.util.ArrayList;
@@ -62,6 +63,7 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
             mAdapter.notifyDataSetChanged();
             // Hide the error layout from the user
             mRelativeLayout.setVisibility(View.GONE);
+            MainScreen.hideLoadingIndicator();
         }
         Log.d(DEBUG_TAG,"We got a response from the API");
     }

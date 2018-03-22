@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
 public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener,MoviesAdapter.OnMovieClickedInterface{
 
 
+    private static ProgressBar sLoadingIndicator;
     private CustomCallBack mCustomCallBack;
     private BroadcastReceiver mBroadcastReceiver;
     private MoviesAdapter mAdapter;
@@ -55,6 +58,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen_layout);
+        sLoadingIndicator = findViewById(R.id.main_screen_loading_indicator);
         //Get Reference to recyclerView
         RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_rv);
         //Instantiate arrayList of movies
@@ -127,6 +131,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
         if(UIneedsToBeUpdated())
         {
+            showLoadingIndicator();
             MovieDbClient.makeRequest(mCustomCallBack, mSortOrder);
             mUineedsUpdate = false;
         }
@@ -269,4 +274,15 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         openDetailScreen.putExtra(this.getString(R.string.EXTRA_KEY),movieClicked);
         startActivity(openDetailScreen);
     }
+
+    public static void hideLoadingIndicator()
+    {
+        sLoadingIndicator.setVisibility(View.GONE);
+    }
+
+    public static void showLoadingIndicator()
+    {
+        sLoadingIndicator.setVisibility(View.VISIBLE);
+    }
+
 }
