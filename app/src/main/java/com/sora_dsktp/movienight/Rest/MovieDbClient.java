@@ -36,7 +36,7 @@ public class MovieDbClient
      {
          //"kind" is either popular or top_rated
          @GET("movie/{sort}/")
-         Call<JsonObjectResultDescription> browseMovies(@Path("sort") String sort, @Query("api_key") String api_key);
+         Call<JsonObjectResultDescription> browseMovies(@Path("sort") String sort, @Query("api_key") String api_key , @Query("page") int page);
      }
 
     /**
@@ -44,7 +44,7 @@ public class MovieDbClient
      * @param callBack callback object to handle the response from the server
      * @param sort_key sort order of getting the movies . Top rated or popular
      */
-     public static void makeRequest(CustomCallBack<JsonObjectResultDescription> callBack,String sort_key)
+     public static void makeRequest(CustomCallBack<JsonObjectResultDescription> callBack,String sort_key, int page)
      {
          //Create a retrofit builder
          Retrofit.Builder builder = new Retrofit.Builder();
@@ -55,7 +55,7 @@ public class MovieDbClient
          Retrofit retrofit = builder.build();
          RetrofitCallInterface client = retrofit.create(RetrofitCallInterface.class);
          // create a call object
-         Call<JsonObjectResultDescription> call = client.browseMovies(sort_key,API_KEY);
+         Call<JsonObjectResultDescription> call = client.browseMovies(sort_key,API_KEY,page);
          // make a call to the server asynchronously
          call.enqueue(callBack);
      }

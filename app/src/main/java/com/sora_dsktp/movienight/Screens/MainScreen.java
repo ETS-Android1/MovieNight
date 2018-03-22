@@ -21,18 +21,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.sora_dsktp.movienight.Rest.CustomCallBack;
-import com.sora_dsktp.movienight.Rest.MovieDbClient;
 import com.sora_dsktp.movienight.Settings.SettingsActivity;
 import com.sora_dsktp.movienight.Utils.MoviesAdapter;
+import com.sora_dsktp.movienight.Utils.PaginationScrollListener;
+import com.sora_dsktp.movienight.Utils.UiController;
 
 import java.util.ArrayList;
 
@@ -42,42 +40,78 @@ import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
 public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener,MoviesAdapter.OnMovieClickedInterface{
 
 
-    private static ProgressBar sLoadingIndicator;
-    private CustomCallBack mCustomCallBack;
+    public static final int SPAN_COUNT = 3;   //How many movies in each row
+    private CustomCallBack mMoviesCallBack;
     private BroadcastReceiver mBroadcastReceiver;
     private MoviesAdapter mAdapter;
     private IntentFilter mIntentFilter;
-    private  String mSortOrder;
-    private  boolean mWeHaveInternet = true;
-    private  boolean mFirstTimeFetch = true;
-    private  boolean mUineedsUpdate = true;
+    private UiController mController;
     private static final String DEBUG_TAG = "#MainScreen.java";
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen_layout);
-        sLoadingIndicator = findViewById(R.id.main_screen_loading_indicator);
-        //Get Reference to recyclerView
-        RecyclerView rvMovies = (RecyclerView) findViewById(R.id.movies_rv);
-        //Instantiate arrayList of movies
-        ArrayList<Movie> movies = new ArrayList<>();
-        // Create an adapter
-        // and a layoutManager
-        // Gridlayout to be specific cause we want grid like layout
-        // and set them both to recycler View
-        mAdapter = new MoviesAdapter(movies,this,this);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 3);
-        rvMovies.setLayoutManager(mLayoutManager);
-        rvMovies.setAdapter(mAdapter);
+        final ArrayList<Movie> movies = new ArrayList<>(); // ArrayList to use to store the movies
+        mAdapter = new MoviesAdapter(movies,this,this); // Adapter for the movies
+
         //Instantiate a custom Callback object passing in the adapter to populate
         // with data when we get a response from the Movies DB API
-        mCustomCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter, (RelativeLayout) findViewById(R.id.error_display_layout));
+        mMoviesCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter);
+        // create an instance of UI controller
+        mController = new UiController(this, mMoviesCallBack);
+        // set ui controller on callback from API
+        mMoviesCallBack.setUIcontroller(mController);
+
+        setUpRecyclerView();
         // Set the toolbar title
         setActionBarTitle();
         //Create and register the Connectivity broadcast receiver
         createInternetBroadcastReceiver();
+    }
+
+    /**
+     * Setup method for cleaner onCreate method
+     */
+    private void setUpRecyclerView()
+    {
+        //Get Reference to recyclerView
+        RecyclerView rvMovies = findViewById(R.id.movies_rv);
+        //Create a layout manager
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, SPAN_COUNT);
+        // set methods
+        rvMovies.setLayoutManager(mLayoutManager); // sets the layoutmanager
+        rvMovies.setAdapter(mAdapter); // set's the recyclerView's adapter
+        rvMovies.setOnScrollListener(new PaginationScrollListener(mLayoutManager) {
+            @Override
+            protected void loadMoreItems()
+            {
+                // check if the app is
+                // loading still data
+                // from a previous request
+                if(!isLoading())
+                {
+                    // set the variable to true
+                    // so we can fetch the movies
+                    mController.setUIneedsUpdate(true);
+                    // pass as a parameter the page to index the API
+                    mController.fetchMovies();
+                }
+            }
+
+            /**
+             * Simple method for checking if a request to the API is still active
+             * @return the state of loading
+             */
+            @Override
+            public boolean isLoading()
+            {
+                return mController.isLoading();
+            }
+        }); // OnScrollListener for pagination
     }
 
     /**
@@ -98,16 +132,16 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                     // check to see if we need to update the ui
                     if(activeNetwork.isConnected())
                     {
-                        mWeHaveInternet = true;
+                        mController.setWeHaveInternet(true);
                         //Check to See if we have internet and then fetch the data
-                        if(UIneedsToBeUpdated()) fetchMovies();
+                        if(mController.UIneedsToBeUpdated()) mController.fetchMovies();
                     }
                 }
                 // If we lose Internet connectivity show a Toast message
                 else
                 {
                     Toast.makeText(context, R.string.no_connection_message,Toast.LENGTH_LONG).show();
-                    mWeHaveInternet = false;
+                    mController.setWeHaveInternet(false);
                 }
 
             }
@@ -116,48 +150,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // and register the receiver
         mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         this.registerReceiver(mBroadcastReceiver,mIntentFilter);
-    }
-
-    /**
-     * This method makes the request to the Movies db
-     * if needed
-     */
-    public void fetchMovies()
-    {
-        // If we have internet connection
-        // make the request passing in the callback object and the sort Order we want
-        //Load Default Sort Order
-        SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
-        mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
-        if(UIneedsToBeUpdated())
-        {
-            showLoadingIndicator();
-            MovieDbClient.makeRequest(mCustomCallBack, mSortOrder);
-            mUineedsUpdate = false;
-        }
-    }
-
-
-    /**
-     * Method for determining if we need to UpdateTheUi
-     * @return true or false depending the outcome of the if/else statements
-     */
-    public boolean UIneedsToBeUpdated()
-    {
-        Log.d(DEBUG_TAG,"Value of mWeHaveInternet = " + mWeHaveInternet +
-                "\n" + "Value of mUiNeedsUpdate = " + mUineedsUpdate + "\n" +
-                      "Value of mFirstTimeFetch = " + mFirstTimeFetch);
-        // If we have internet and the Ui needs update and its the first time the user opens the app
-        // the return true and set the mFirstTimeFetch variable to false.
-        if(mWeHaveInternet && mUineedsUpdate && mFirstTimeFetch)
-        {
-            mFirstTimeFetch = false;
-            return true;
-        }
-        // If we wave internet and the UI needs  update then return true
-        else if(mWeHaveInternet && mUineedsUpdate) return true;
-        // In any other case return false
-        else return false;
     }
 
     /**
@@ -207,13 +199,21 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // "Sort Order" menu item was changed
         if(key.equals(getResources().getString(R.string.sort_order_key)))
         {
-            mUineedsUpdate = true;
+            // Tell the Ui it needs update
+            // clear the data from the adapter
+            // reset the indexing page for the API
+            mController.setUIneedsUpdate(true);
+            mAdapter.clearData();
+            mController.showErrorLayout(); // In case we don't have internet show the empty dataset layout
+            mController.resetAPIindex();
             // Make the request to the API again using the appropriate "sort_order"
-            fetchMovies();
+            mController.fetchMovies();
             //Remember to change the toolbar title
             setActionBarTitle();
         }
     }
+
+
 
     @Override
     protected void onResume() {
@@ -240,9 +240,9 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     public void setActionBarTitle() {
         //Load Default Sort Order
         SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(this);
-        mSortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
+        String SortOrder = sharedPreferences.getString(getResources().getString(R.string.sort_order_key),POPULAR_PATH);
         //Set the title according to the sort order
-        switch (mSortOrder)
+        switch (SortOrder)
         {
             case "popular":
             {
@@ -273,16 +273,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         Log.d(DEBUG_TAG,movieClicked.toString());
         openDetailScreen.putExtra(this.getString(R.string.EXTRA_KEY),movieClicked);
         startActivity(openDetailScreen);
-    }
-
-    public static void hideLoadingIndicator()
-    {
-        sLoadingIndicator.setVisibility(View.GONE);
-    }
-
-    public static void showLoadingIndicator()
-    {
-        sLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
 }

@@ -39,6 +39,8 @@ import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
+
+
     // Simple interface to implement on main activity
     // to delegate the click on a movie
     public interface OnMovieClickedInterface{
@@ -68,7 +70,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
      */
     public void pushTheData(ArrayList<Movie> data)
     {
-        this.mMovies = data;
+        this.mMovies.addAll(data);
+    }
+
+    /**
+     * Method for clearing the movies list
+     */
+    public void clearData() {
+        mMovies.clear();
+        notifyDataSetChanged();
     }
 
     /**
