@@ -63,6 +63,8 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         mMoviesCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter);
         // create an instance of UI controller
         mController = new UiController(this, mMoviesCallBack);
+        // set the adapter to the UI controller
+        mController.setAdapter(mAdapter);
         // set ui controller on callback from API
         mMoviesCallBack.setUIcontroller(mController);
 
@@ -71,7 +73,11 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         setActionBarTitle();
         //Create and register the Connectivity broadcast receiver
         createInternetBroadcastReceiver();
+
+        //if favourite mode is enabled load the movies
+        if(mController.favouritesMode()) mController.fetchFavouriteMovies();
     }
+
 
     /**
      * Setup method for cleaner onCreate method
@@ -92,12 +98,13 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 // check if the app is
                 // loading still data
                 // from a previous request
-                if(!isLoading())
+                if(!isLoading()&& !mController.favouritesMode())
                 {
                     // set the variable to true
                     // so we can fetch the movies
                     mController.setUIneedsUpdate(true);
                     // pass as a parameter the page to index the API
+                    Log.d("#UiController.java","fetching movies for load more method");
                     mController.fetchMovies();
                 }
             }
@@ -133,8 +140,11 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                     if(activeNetwork.isConnected())
                     {
                         mController.setWeHaveInternet(true);
-                        //Check to See if we have internet and then fetch the data
-                        if(mController.UIneedsToBeUpdated()) mController.fetchMovies();
+                        if(!mController.favouritesMode())
+                        {
+                            Log.d("#UiCo","Fetching movies from the broadcast receiver.....");
+                            mController.fetchMovies();
+                        }
                     }
                 }
                 // If we lose Internet connectivity show a Toast message
@@ -199,17 +209,31 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // "Sort Order" menu item was changed
         if(key.equals(getResources().getString(R.string.sort_order_key)))
         {
-            // Tell the Ui it needs update
-            // clear the data from the adapter
-            // reset the indexing page for the API
-            mController.setUIneedsUpdate(true);
-            mAdapter.clearData();
-            mController.showErrorLayout(); // In case we don't have internet show the empty dataset layout
-            mController.resetAPIindex();
-            // Make the request to the API again using the appropriate "sort_order"
-            mController.fetchMovies();
             //Remember to change the toolbar title
             setActionBarTitle();
+
+            String sortOrder = mController.getSortOrder();
+
+            if(mController.favouritesMode())
+            {
+                // fetch offline favourite movies
+                Toast.makeText(getApplicationContext(),"Coming soon!",Toast.LENGTH_SHORT).show();
+                mController.fetchFavouriteMovies();
+            }
+            else
+            {
+                // fetch from the server
+                // Tell the Ui it needs update
+                // clear the data from the adapter
+                // reset the indexing page for the API
+                mController.setUIneedsUpdate(true);
+                mAdapter.clearData();
+                mController.showErrorLayout(); // In case we don't have internet show the empty dataset layout
+                mController.resetAPIindex();
+                Log.d("#UiCo","Fetching movies for sharedPreferences listener.....");
+                // Make the request to the API again using the appropriate "sort_order"
+                mController.fetchMovies();
+            }
         }
     }
 
@@ -253,6 +277,10 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
             {
                 getSupportActionBar().setTitle("Top Rated Movies");
                 break;
+            }
+            case "favourites":
+            {
+                getSupportActionBar().setTitle("Favourite Movies");
             }
         }
     }

@@ -5,21 +5,25 @@
 
 package com.sora_dsktp.movienight.Screens;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sora_dsktp.movienight.Model.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
 
@@ -41,6 +45,7 @@ public class DetailsScreen extends AppCompatActivity
     private static final String DEBUG_TAG = "#DetailsScreen.java";
     private TextView mTitleTextView,mRatingTextView,mReleaseDateTextView,mDescriptionTextView;
     private ImageView mPosterImageView;
+    private Movie mMovieClicked;
 
 
 
@@ -65,19 +70,47 @@ public class DetailsScreen extends AppCompatActivity
         {
             Log.d(DEBUG_TAG,"We have a non null Intent");
             //Get the movie from the extras
-            Movie moviePassed = (Movie) passedIntent.getParcelableExtra(getString(R.string.EXTRA_KEY));
-            Log.d(DEBUG_TAG,moviePassed.toString());
+            mMovieClicked = (Movie) passedIntent.getParcelableExtra(getString(R.string.EXTRA_KEY));
+            Log.d(DEBUG_TAG, mMovieClicked.toString());
             // Set the values to the appropriate fields
-            Picasso.with(this).load(IMAGE_BASE_URL + moviePassed.getImagePath()).into(mPosterImageView);
-            Log.d(DEBUG_TAG,"Movie title = " + moviePassed.getMovieTitle());
-            mRatingTextView.setText(String.valueOf(moviePassed.getMovieRating()));
-            mTitleTextView.setText(moviePassed.getMovieTitle());
-            mReleaseDateTextView.setText(moviePassed.getReleaseDate());
-            mDescriptionTextView.setText(moviePassed.getMovieDescription());
+            Picasso.with(this).load(IMAGE_BASE_URL + mMovieClicked.getImagePath()).into(mPosterImageView);
+            Log.d(DEBUG_TAG,"Movie title = " + mMovieClicked.getMovieTitle());
+            mRatingTextView.setText(String.valueOf(mMovieClicked.getMovieRating()));
+            mTitleTextView.setText(mMovieClicked.getMovieTitle());
+            mReleaseDateTextView.setText(mMovieClicked.getReleaseDate());
+            mDescriptionTextView.setText(mMovieClicked.getMovieDescription());
             // Set the toolbar title to the movie title
-            getSupportActionBar().setTitle(moviePassed.getMovieTitle());
+            getSupportActionBar().setTitle(mMovieClicked.getMovieTitle());
         }
 
     }
 
+
+    public void favouriteButtonClicked(View view)
+    {
+        FloatingActionButton button = (FloatingActionButton) view;
+        ColorStateList list ;
+        list = button.getBackgroundTintList();
+        if(Color.TRANSPARENT == list.getDefaultColor())
+        {
+
+            ContentValues cv = new ContentValues();
+
+            cv.put(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_TITLE,mMovieClicked.getMovieTitle());
+            cv.put(DatabaseContract.FavouriteMovies.COLUMN_RELEASE_DATE,mMovieClicked.getReleaseDate());
+            cv.put(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_DESCRIPTION,mMovieClicked.getMovieDescription());
+            cv.put(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_RATING,mMovieClicked.getMovieRating());
+            cv.put(DatabaseContract.FavouriteMovies.COLUMN_POSTER_PATH,mMovieClicked.getImagePath());
+
+            Uri uri = getContentResolver().insert(DatabaseContract.FavouriteMovies.CONTENT_URI,cv);
+            if( uri != null)  Toast.makeText(this,uri.toString(),Toast.LENGTH_SHORT).show();
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            button.setBackgroundTintMode(null);
+        }
+        else
+        {
+            Toast.makeText(this,"It's favourite",Toast.LENGTH_SHORT).show();
+            button.setBackgroundColor(Color.TRANSPARENT);
+        }
+    }
 }

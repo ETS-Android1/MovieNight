@@ -6,17 +6,24 @@
 package com.sora_dsktp.movienight.Utils;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.sora_dsktp.movienight.Model.DatabaseContract;
+import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.sora_dsktp.movienight.Rest.CustomCallBack;
 import com.sora_dsktp.movienight.Rest.MovieDbClient;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 
+import java.util.ArrayList;
+
+import static com.sora_dsktp.movienight.Utils.Constants.FAVOURITE_SORT_ORDER;
 import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
 
 /**
@@ -38,6 +45,7 @@ public class UiController
     // Pagination variables
     private int pageToIndex = 1;
     private boolean isLoading = false;
+    private MoviesAdapter mAdapter;
 
     /**
      * Constructor
@@ -105,21 +113,64 @@ public class UiController
     }
 
     /**
+     * Method for getting the movies from the local database
+     */
+    public void fetchFavouriteMovies() {
+        Log.d(DEBUG_TAG,"Fetching favourite movies.....");
+
+        ArrayList<Movie> movies = new ArrayList<>();
+        Cursor cursor = mainScreen.getContentResolver().query(DatabaseContract.FavouriteMovies.CONTENT_URI, null, null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            int titleColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_TITLE);
+            int descriptionColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_DESCRIPTION);
+            int ratingColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_RATING);
+            int releaseDateColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_RELEASE_DATE);
+            int posterPathColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_POSTER_PATH);
+
+
+            while (cursor.moveToNext()) {
+                String movieTitle = cursor.getString(titleColumnIndex);
+                String movieDesc = cursor.getString(descriptionColumnIndex);
+                String movieDate = cursor.getString(releaseDateColumnIndex);
+                String posterPath = cursor.getString(posterPathColumnIndex);
+                int movieRating = cursor.getInt(ratingColumnIndex);
+
+                movies.add(new Movie(movieRating, movieTitle, posterPath, movieDesc, movieDate));
+            }
+            cursor.close();
+            mAdapter.clearData();
+            mAdapter.pushTheData(movies);
+            mAdapter.notifyDataSetChanged();
+            // Hide the error layout from the user
+            this.hideErrorLayout();
+            // hide the loading indicator
+            this.hideLoadingIndicator();
+        }
+    }
+
+    /**
      * This method makes the request to the Movies db
      * if needed
      */
     public void fetchMovies()
     {
+
         //Load Default Sort Order
         SharedPreferences sharedPreferences  = PreferenceManager.getDefaultSharedPreferences(mainScreen);
         String sortOrder = sharedPreferences.getString(mainScreen.getResources().getString(R.string.sort_order_key),POPULAR_PATH);
         if(UIneedsToBeUpdated() && pageToIndex != 1000) // page = 1000 is the last page so don't make any call to the API
         {
+            Log.d(DEBUG_TAG,"Fetching movies from the API.....");
             isLoading = true;
             if(isLoading) showLoadingIndicator();
             MovieDbClient.makeRequest(mCallBack, sortOrder, pageToIndex);
             UIneedsUpdate = false;
         }
+
+
     }
 
 
@@ -143,6 +194,17 @@ public class UiController
         else if(WeHaveInternet && UIneedsUpdate) return true;
             // In any other case return false
         else return false;
+    }
+
+
+    /**
+     * Getter method for sort preference
+     * @return the sort preference from the user
+     */
+    public String getSortOrder()
+    {
+        return PreferenceManager.getDefaultSharedPreferences(mainScreen).getString(mainScreen.getResources().getString(R.string.sort_order_key),Constants.POPULAR_PATH);
+
     }
 
     /**
@@ -223,5 +285,13 @@ public class UiController
      */
     public void setLoading(boolean loading) {
         isLoading = loading;
+    }
+
+    public void setAdapter(MoviesAdapter mAdapter) {
+        this.mAdapter = mAdapter;
+    }
+
+    public boolean favouritesMode() {
+        return getSortOrder().equals(mainScreen.getResources().getString(R.string.sort_favourite_movies_value));
     }
 }

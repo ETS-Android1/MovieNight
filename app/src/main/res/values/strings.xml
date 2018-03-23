@@ -19,12 +19,14 @@
     <string name="settings_activity_label_name">Settings</string>
     <string name="popular_movies">Popular Movies</string>
     <string name="top_rated_movies">Top Rated</string>
+    <string name="favourite_movies">Favourite Movies</string>
     <string name="preference_category_title_display_settings">Display Settings</string>
 
     <!--Sorting related Strings-->
     <string name="sort_order_key">sort_order_key</string>
     <string name="sort_popular_movies_value">popular</string>
     <string name="sort_top_rated_movies_value">top_rated</string>
+    <string name="sort_favourite_movies_value">favourites</string>
 
     <!--Toolbar Action Strings-->
     <string name="sort_order_toolbar_action">Sort Order</string>

@@ -32,6 +32,13 @@
         <activity
             android:name=".Screens.DetailsScreen"
             android:parentActivityName=".Screens.MainScreen"/>
+        <!--Content provider for the Favourite movies database-->
+        <provider
+            android:authorities="com.sora_dsktp.movienight.Model.FavouritesContentProvider"
+            android:name=".Model.FavouritesContentProvider"
+            android:exported="false">
+        </provider>
+
     </application>
 
 </manifest>

@@ -5,12 +5,15 @@
     <array name="sort_order_array_names">
         <item>@string/popular_movies</item>
         <item>@string/top_rated_movies</item>
+        <item>@string/favourite_movies</item>
+
     </array>
 
     <!--Value of the names selected-->
     <array name="sort_order_array_values">
         <item>@string/sort_popular_movies_value</item>
         <item>@string/sort_top_rated_movies_value</item>
+        <item>@string/sort_favourite_movies_value</item>
     </array>
 
 </resources>
