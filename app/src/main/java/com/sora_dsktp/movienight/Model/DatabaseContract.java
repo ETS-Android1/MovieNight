@@ -8,6 +8,8 @@ package com.sora_dsktp.movienight.Model;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.sora_dsktp.movienight.BuildConfig;
+
 /**
  * This file created by Georgios Kostogloudis
  * and was last modified on 23/3/2018.
@@ -16,7 +18,11 @@ import android.provider.BaseColumns;
  */
 public class DatabaseContract
 {
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+
     private DatabaseContract()  { }
+
 
     // The authority, which is how your code knows which Content Provider to access
     public static final String AUTHORITY = "com.sora_dsktp.movienight.Model.FavouritesContentProvider";

@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * This class is being used to describe
  * the json response schema
  */
-public class JsonObjectResultDescription
+public class JsonMoviesApiModel
 {
     private int page;
     private int total_results;

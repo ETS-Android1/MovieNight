@@ -19,7 +19,8 @@ import android.util.Log;
 public class FavouritesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "favourite.db";
-    private static final String DEBUG_TAG = "FavouritesDbHelper.java";
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
 
     private static final int DB_VERSION = 1;
 

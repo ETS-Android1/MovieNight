@@ -3,10 +3,9 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Utils;
+package com.sora_dsktp.movienight.Listeners;
 
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
@@ -17,20 +16,21 @@ import android.support.v7.widget.RecyclerView;
  */
 public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
 
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+    private GridLayoutManager mLayoutManager;
 
-    GridLayoutManager layoutManager;
-
-    public PaginationScrollListener(GridLayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
+    public PaginationScrollListener(GridLayoutManager mLayoutManager) {
+        this.mLayoutManager = mLayoutManager;
     }
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        int visibleItemCount = layoutManager.getChildCount();
-        int totalItemCount = layoutManager.getItemCount();
-        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+        int visibleItemCount = mLayoutManager.getChildCount();
+        int totalItemCount = mLayoutManager.getItemCount();
+        int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
         if (!isLoading()) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0)

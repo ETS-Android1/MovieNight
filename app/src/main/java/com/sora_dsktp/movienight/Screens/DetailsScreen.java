@@ -5,22 +5,16 @@
 
 package com.sora_dsktp.movienight.Screens;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.sora_dsktp.movienight.Model.DatabaseContract;
+import com.sora_dsktp.movienight.Controllers.DetailScreenUiController;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.squareup.picasso.Picasso;
@@ -42,11 +36,13 @@ import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
  */
 public class DetailsScreen extends AppCompatActivity
 {
-    private static final String DEBUG_TAG = "#DetailsScreen.java";
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
     private TextView mTitleTextView,mRatingTextView,mReleaseDateTextView,mDescriptionTextView;
     private ImageView mPosterImageView;
     private Movie mMovieClicked;
-
+    private int mMovieAdapterPosition;
+    private DetailScreenUiController mController;
 
 
     @Override
@@ -54,10 +50,11 @@ public class DetailsScreen extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_screen_layout);
-
         //Show the back button on the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Get reference to the textviews
+        //create a UI controller
+        mController = new DetailScreenUiController(this);
+        // Get reference to the textView's
         mPosterImageView = findViewById(R.id.iv_image_poster);
         mRatingTextView = findViewById(R.id.tv_rating_value);
         mReleaseDateTextView = findViewById(R.id.tv_release_date_value);
@@ -70,7 +67,9 @@ public class DetailsScreen extends AppCompatActivity
         {
             Log.d(DEBUG_TAG,"We have a non null Intent");
             //Get the movie from the extras
-            mMovieClicked = (Movie) passedIntent.getParcelableExtra(getString(R.string.EXTRA_KEY));
+            mMovieClicked = (Movie) passedIntent.getParcelableExtra(getString(R.string.EXTRA_KEY_MOVIE_OBJ));
+            //get the movie's adapter position
+            mMovieAdapterPosition = passedIntent.getIntExtra(getResources().getString(R.string.EXTRA_KEY_MOVIE_ID),-1);
             Log.d(DEBUG_TAG, mMovieClicked.toString());
             // Set the values to the appropriate fields
             Picasso.with(this).load(IMAGE_BASE_URL + mMovieClicked.getImagePath()).into(mPosterImageView);
@@ -81,36 +80,37 @@ public class DetailsScreen extends AppCompatActivity
             mDescriptionTextView.setText(mMovieClicked.getMovieDescription());
             // Set the toolbar title to the movie title
             getSupportActionBar().setTitle(mMovieClicked.getMovieTitle());
+            //check to see if the movie is already marked as favourite
+            mController.checkTheMovieOnDatabase(mMovieClicked);
         }
 
     }
 
+    public Movie getmMovieClicked() {
+        return mMovieClicked;
+    }
 
+    public int getmMovieAdapterPosition() {
+        return mMovieAdapterPosition;
+    }
+
+    /**
+     * This method handle's the click on the heart button
+     * It creates a content values object to store a Movie object inside it
+     * Then in a background thread using a runnable object it call's the content's
+     * resolver method insert to store the movie object to  the local SQlite database and
+     * if the insert is successful it calss the paintHeartButton to make the heart RED indicating that
+     * the movie is now a "favourite movie" . If the heart button is already RED meaning the movie is already favourite
+     * then it removes the movie from the database using again content's resolver delete() method in a background thread
+     * @param view The view that was clicked , in this case an ImageButton
+     */
     public void favouriteButtonClicked(View view)
     {
-        FloatingActionButton button = (FloatingActionButton) view;
-        ColorStateList list ;
-        list = button.getBackgroundTintList();
-        if(Color.TRANSPARENT == list.getDefaultColor())
-        {
-
-            ContentValues cv = new ContentValues();
-
-            cv.put(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_TITLE,mMovieClicked.getMovieTitle());
-            cv.put(DatabaseContract.FavouriteMovies.COLUMN_RELEASE_DATE,mMovieClicked.getReleaseDate());
-            cv.put(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_DESCRIPTION,mMovieClicked.getMovieDescription());
-            cv.put(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_RATING,mMovieClicked.getMovieRating());
-            cv.put(DatabaseContract.FavouriteMovies.COLUMN_POSTER_PATH,mMovieClicked.getImagePath());
-
-            Uri uri = getContentResolver().insert(DatabaseContract.FavouriteMovies.CONTENT_URI,cv);
-            if( uri != null)  Toast.makeText(this,uri.toString(),Toast.LENGTH_SHORT).show();
-            button.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-            button.setBackgroundTintMode(null);
-        }
-        else
-        {
-            Toast.makeText(this,"It's favourite",Toast.LENGTH_SHORT).show();
-            button.setBackgroundColor(Color.TRANSPARENT);
-        }
+           if(!mController.getIsFavourite())
+           {
+               mController.addTheMovieToTheDatabase(mMovieClicked);
+           }
+           else mController.deleteTheMovieFromDatabase(mMovieClicked);
     }
+
 }

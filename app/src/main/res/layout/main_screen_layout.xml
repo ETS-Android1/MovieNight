@@ -23,6 +23,8 @@
     <!--No data to show layout-->
     <include layout="@layout/empty_dataset_view" />
 
+    <!--No favourite movies layout-->
+    <include layout="@layout/empy_favourites_layout"/>
     <!--Data loading indicator-->
     <ProgressBar
         android:id="@+id/main_screen_loading_indicator"

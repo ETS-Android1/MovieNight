@@ -3,12 +3,10 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Utils;
+package com.sora_dsktp.movienight.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.sora_dsktp.movienight.Controllers.MainScreenUiController;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Screens.DetailsScreen;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,7 +36,17 @@ import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
  */
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+    private ArrayList<Movie> mMovies;
+    private Context mContext;
+    private OnMovieClickedInterface mClickListener;
+    private final customObserver mObserver = new customObserver();
+    private MainScreenUiController mMainScreenUiController;
 
+    public void setUiController(MainScreenUiController uiController) {
+        this.mMainScreenUiController = uiController;
+    }
 
     // Simple interface to implement on main activity
     // to delegate the click on a movie
@@ -47,38 +54,86 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
          void onMovieClicked(int moviePosition,Movie movie);
     }
 
-    public static final String DEBUG_TAG = "#MoviesAdapter.java";
-    private ArrayList<Movie> mMovies;
-    private Context mContext;
-    private OnMovieClickedInterface mClickListener;
 
+    private class customObserver extends RecyclerView.AdapterDataObserver
+    {
+        public customObserver() {
+        }
+
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            Log.e(DEBUG_TAG,"onChanged occured......");
+            if(getItemCount() == 0)
+            {
+                if(mMainScreenUiController.favouritesMode())
+                {
+                    mMainScreenUiController.showEmptyFavouriteMoviesLayout();
+                }
+                else
+                {
+                    mMainScreenUiController.showErrorLayout();
+                }
+            }
+            else
+            {
+                mMainScreenUiController.hideErrorLayout();
+                mMainScreenUiController.hideEmptyFavouriteMoviesLayout();
+            }
+        }
+
+    }
 
     /**
      * Default constructor for the adapter
      * @param mMovies ArrayList of movie objects
      * @param mContext Context object used to get reference to resources
      */
-    public MoviesAdapter(ArrayList<Movie> mMovies, Context mContext,OnMovieClickedInterface listener) {
+    public MoviesAdapter(ArrayList<Movie> mMovies, Context mContext, OnMovieClickedInterface listener) {
         this.mMovies = mMovies;
         this.mContext = mContext;
         this.mClickListener = listener;
+        registerAdapterDataObserver(mObserver);
     }
 
     /**
      * Setter method for mMovies field
      * @param data the data we want to set
      */
-    public void pushTheData(ArrayList<Movie> data)
+    public void pushTheDataToTheAdapter(ArrayList<Movie> data)
     {
         this.mMovies.addAll(data);
     }
 
     /**
-     * Method for clearing the movies list
+     * Method for clearing the movies list from the recyclerview
      */
     public void clearData() {
         mMovies.clear();
         notifyDataSetChanged();
+    }
+
+    /**
+     * Method for removing one item (movie) from
+     * the recyclerview
+     */
+    public boolean removeItemFromRecyclerView(Movie movie, int adapterPosition)
+    {
+        Log.d(DEBUG_TAG,"Removing movie from the adaptor with title = " + movie.getMovieTitle());
+        // remove the movie from the recyclerview using the
+        // adapter position of the movie
+        Movie deletedMovie = mMovies.remove(adapterPosition);
+        // check if the movie that was deleted is equal to the movie object
+        // we want to delete by comparing their toString() methods for equality
+        if(deletedMovie.toString().equals(movie.toString()))
+        {
+            //Removed sucessfully from the recyclerview
+            Log.d(DEBUG_TAG,"Movie removed from the adapter with no errors");
+            notifyDataSetChanged();
+            return true;
+        }
+        Log.e(DEBUG_TAG,"Could'n delete the movie from the adapter");
+        return false;
     }
 
     /**
@@ -123,6 +178,23 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public int getItemCount() {
         Log.d(DEBUG_TAG,"Item Size = " + mMovies.size());
+        if(mMovies.size() == 0)
+        {
+            if(mMainScreenUiController.favouritesMode())
+            {
+                mMainScreenUiController.showEmptyFavouriteMoviesLayout();
+            }
+            else
+            {
+                mMainScreenUiController.showErrorLayout();
+            }
+        }
+        else
+        {
+            mMainScreenUiController.hideErrorLayout();
+            mMainScreenUiController.hideEmptyFavouriteMoviesLayout();
+
+        }
         return mMovies.size();
     }
 

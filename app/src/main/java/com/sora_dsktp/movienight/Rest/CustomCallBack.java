@@ -5,16 +5,12 @@
 
 package com.sora_dsktp.movienight.Rest;
 
-import android.provider.Contacts;
 import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
+import com.sora_dsktp.movienight.Model.JsonMoviesApiModel;
 import com.sora_dsktp.movienight.Model.Movie;
-import com.sora_dsktp.movienight.Screens.MainScreen;
-import com.sora_dsktp.movienight.Utils.MoviesAdapter;
-import com.sora_dsktp.movienight.Utils.UiController;
+import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
+import com.sora_dsktp.movienight.Controllers.MainScreenUiController;
 
 import java.util.ArrayList;
 
@@ -36,11 +32,12 @@ import retrofit2.Response;
  * which is called when we get a response from the movie db API
  * @param <J>
  */
-public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> {
-    public static final String DEBUG_TAG = "#CustomCallBack.java";
+public class CustomCallBack<J> implements Callback<JsonMoviesApiModel> {
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
 
     private MoviesAdapter mAdapter;
-    private UiController mController;
+    private MainScreenUiController mController;
     public CustomCallBack(MoviesAdapter mAdapter)
     {
         this.mAdapter = mAdapter;
@@ -52,10 +49,10 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
      * @param response Response object contains the response from the server
      */
     @Override
-    public void onResponse(Call<JsonObjectResultDescription> call, Response<JsonObjectResultDescription> response)
+    public void onResponse(Call<JsonMoviesApiModel> call, Response<JsonMoviesApiModel> response)
     {
         //Get the object from the response body
-        JsonObjectResultDescription result = response.body();
+        JsonMoviesApiModel result = response.body();
         //increment the page to index on the next call
         mController.incrementAPIindex();
         //Get the movies from the call
@@ -64,12 +61,15 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
         //to the adapter and notify him
         if(!movies.isEmpty())
         {
-            mAdapter.pushTheData(movies);
-            mAdapter.notifyDataSetChanged();
-            // Hide the error layout from the user
-            mController.hideErrorLayout();
+//            // Hide the error layout from the user
+//            mController.hideErrorLayout();
             // hide the loading indicator
             mController.hideLoadingIndicator();
+//            // hide the empty favourite layout if is shown from the user
+//            mController.hideEmptyFavouriteMoviesLayout();
+            // notify the adapter
+            mAdapter.pushTheDataToTheAdapter(movies);
+            mAdapter.notifyDataSetChanged();
         }
         mController.setLoading(false);
         Log.d(DEBUG_TAG,"We got a response from the API");
@@ -82,7 +82,7 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
      * @param t The exception we get
      */
     @Override
-    public void onFailure(Call<JsonObjectResultDescription> call, Throwable t)
+    public void onFailure(Call<JsonMoviesApiModel> call, Throwable t)
     {
         t.printStackTrace();
         Log.e(DEBUG_TAG,"There was an error fetching data from the API");
@@ -92,7 +92,7 @@ public class CustomCallBack<J> implements Callback<JsonObjectResultDescription> 
      * Setter method
      * @param controller the Ui controller to use
      */
-    public void setUIcontroller(UiController controller)
+    public void setUIcontroller(MainScreenUiController controller)
     {
         this.mController = controller;
     }

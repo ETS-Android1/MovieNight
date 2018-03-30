@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,16 +20,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.sora_dsktp.movienight.Model.JsonObjectResultDescription;
+import com.sora_dsktp.movienight.BroadcastReceivers.InternetBroadcastReceiver;
+import com.sora_dsktp.movienight.Model.JsonMoviesApiModel;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.sora_dsktp.movienight.Rest.CustomCallBack;
 import com.sora_dsktp.movienight.Settings.SettingsActivity;
-import com.sora_dsktp.movienight.Utils.MoviesAdapter;
-import com.sora_dsktp.movienight.Utils.PaginationScrollListener;
-import com.sora_dsktp.movienight.Utils.UiController;
+import com.sora_dsktp.movienight.BroadcastReceivers.DbBroadcastReceiver;
+import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
+import com.sora_dsktp.movienight.Listeners.PaginationScrollListener;
+import com.sora_dsktp.movienight.Controllers.MainScreenUiController;
 
 import java.util.ArrayList;
 
@@ -39,16 +39,14 @@ import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
 
 public class MainScreen extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener,MoviesAdapter.OnMovieClickedInterface{
 
-
-    public static final int SPAN_COUNT = 3;   //How many movies in each row
+    //Log tag for LogCat usage
+    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+    private static final int SPAN_COUNT = 3;   //How many movies in each row
     private CustomCallBack mMoviesCallBack;
     private BroadcastReceiver mBroadcastReceiver;
     private MoviesAdapter mAdapter;
-    private IntentFilter mIntentFilter;
-    private UiController mController;
-    private static final String DEBUG_TAG = "#MainScreen.java";
-
-
+    private MainScreenUiController mController;
+    private DbBroadcastReceiver mDatabaseReceiver;
 
 
     @Override
@@ -60,19 +58,21 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
 
         //Instantiate a custom Callback object passing in the adapter to populate
         // with data when we get a response from the Movies DB API
-        mMoviesCallBack = new CustomCallBack<JsonObjectResultDescription>(mAdapter);
+        mMoviesCallBack = new CustomCallBack<JsonMoviesApiModel>(mAdapter);
         // create an instance of UI controller
-        mController = new UiController(this, mMoviesCallBack);
+        mController = new MainScreenUiController(this, mMoviesCallBack);
         // set the adapter to the UI controller
         mController.setAdapter(mAdapter);
         // set ui controller on callback from API
         mMoviesCallBack.setUIcontroller(mController);
+        // set the mainScreenUicontroller to the adapter
+        mAdapter.setUiController(mController);
 
         setUpRecyclerView();
         // Set the toolbar title
         setActionBarTitle();
         //Create and register the Connectivity broadcast receiver
-        createInternetBroadcastReceiver();
+        intantiateBroadcastReceivers();
 
         //if favourite mode is enabled load the movies
         if(mController.favouritesMode()) mController.fetchFavouriteMovies();
@@ -80,7 +80,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
 
 
     /**
-     * Setup method for cleaner onCreate method
+     * Setup method for cleaner code in onCreate method
      */
     private void setUpRecyclerView()
     {
@@ -104,7 +104,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                     // so we can fetch the movies
                     mController.setUIneedsUpdate(true);
                     // pass as a parameter the page to index the API
-                    Log.d("#UiController.java","fetching movies for load more method");
+                    Log.d(DEBUG_TAG,"fetching movies for load more method");
                     mController.fetchMovies();
                 }
             }
@@ -125,41 +125,13 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
      * This method create's and registers the broadcast receiver.
      * This broadcast is called when a connectivity change occurs
      */
-    private void createInternetBroadcastReceiver() {
-        mBroadcastReceiver= new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetwork;
-                // Get the network info
-                activeNetwork = connectivityManager.getActiveNetworkInfo();
-                if(activeNetwork != null)
-                {
-                    // If we have Internet connectivity
-                    // check to see if we need to update the ui
-                    if(activeNetwork.isConnected())
-                    {
-                        mController.setWeHaveInternet(true);
-                        if(!mController.favouritesMode())
-                        {
-                            Log.d("#UiCo","Fetching movies from the broadcast receiver.....");
-                            mController.fetchMovies();
-                        }
-                    }
-                }
-                // If we lose Internet connectivity show a Toast message
-                else
-                {
-                    Toast.makeText(context, R.string.no_connection_message,Toast.LENGTH_LONG).show();
-                    mController.setWeHaveInternet(false);
-                }
-
-            }
-        };
-        // Create the intent filter for Connectivity Change
-        // and register the receiver
-        mIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        this.registerReceiver(mBroadcastReceiver,mIntentFilter);
+    private void intantiateBroadcastReceivers()
+    {
+        mBroadcastReceiver= new InternetBroadcastReceiver(mController);
+        //create and register db change broadcast receiver
+        mDatabaseReceiver = new DbBroadcastReceiver(mAdapter);
+        //register the internet receiver
+        this.registerReceiver(mBroadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     /**
@@ -212,12 +184,10 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
             //Remember to change the toolbar title
             setActionBarTitle();
 
-            String sortOrder = mController.getSortOrder();
-
+            // if the sort preference is "favourite"
             if(mController.favouritesMode())
             {
                 // fetch offline favourite movies
-                Toast.makeText(getApplicationContext(),"Coming soon!",Toast.LENGTH_SHORT).show();
                 mController.fetchFavouriteMovies();
             }
             else
@@ -228,7 +198,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 // reset the indexing page for the API
                 mController.setUIneedsUpdate(true);
                 mAdapter.clearData();
-                mController.showErrorLayout(); // In case we don't have internet show the empty dataset layout
                 mController.resetAPIindex();
                 Log.d("#UiCo","Fetching movies for sharedPreferences listener.....");
                 // Make the request to the API again using the appropriate "sort_order"
@@ -244,6 +213,9 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         super.onResume();
         //Register the shared Preference Listener
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+        //register database broadcast receiver
+
+        registerReceiver(mDatabaseReceiver,new IntentFilter(DbBroadcastReceiver.ACTION_DATABASE_CHANGED));
 
     }
 
@@ -253,7 +225,9 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         //Unregister the listener
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         //Destroy Internet broadcast Receiver
-        this.unregisterReceiver(mBroadcastReceiver);
+        unregisterReceiver(mBroadcastReceiver);
+        //unregister Database receiver
+        unregisterReceiver(mDatabaseReceiver);
         Log.d(DEBUG_TAG,"On Destroy called");
     }
 
@@ -299,7 +273,8 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         Intent openDetailScreen = new Intent(getApplicationContext(), DetailsScreen.class);
         if(movieClicked == null) Log.e(DEBUG_TAG,"Movie is empty ");
         Log.d(DEBUG_TAG,movieClicked.toString());
-        openDetailScreen.putExtra(this.getString(R.string.EXTRA_KEY),movieClicked);
+        openDetailScreen.putExtra(this.getString(R.string.EXTRA_KEY_MOVIE_OBJ),movieClicked);
+        openDetailScreen.putExtra(getString(R.string.EXTRA_KEY_MOVIE_ID),moviePosition);
         startActivity(openDetailScreen);
     }
 
