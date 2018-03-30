@@ -55,6 +55,11 @@ public class DetailScreenUiController
         mQueryHelper = new AsyncQueryHelper(mDetailScreen.getContentResolver());
     }
 
+    /**
+     * Helper method for packing the clicked movie inside
+     * a contentValues object and starting a asynchronously insert into the database
+     * @param movieClicked The movie object to add to the database
+     */
     public void addTheMovieToTheDatabase(Movie movieClicked)
     {
         // Create content values to put the movie object inside
@@ -71,6 +76,11 @@ public class DetailScreenUiController
         mQueryHelper.startInsert(2,null, DatabaseContract.FavouriteMovies.CONTENT_URI,cv);
     }
 
+    /**
+     * Helper method calling a delete method asynchronously to the database for the movie
+     * clicked
+     * @param movieClicked The movie object to delete from the database
+     */
     public void deleteTheMovieFromDatabase(Movie movieClicked)
     {
         final String selection = DatabaseContract.FavouriteMovies.COLUMN_MOVIE_TITLE + "=?";
@@ -184,6 +194,10 @@ public class DetailScreenUiController
         button.setBackgroundTintMode(null);
     }
 
+    /**
+     * Getter method for mIsFavourite field
+     * @return the value of mIsFavourite field
+     */
     public boolean getIsFavourite() {
         return mIsFavourite;
     }

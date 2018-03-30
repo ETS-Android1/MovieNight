@@ -36,6 +36,11 @@ public class FavouritesContentProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
+    /**
+     * Method for creating a URI matcher for our URI's
+     * a uri for path favourite movies and one path for favourite movies with id
+     * @return the UriMatcher
+     */
     public static UriMatcher buildUriMatcher()
     {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -126,7 +131,7 @@ public class FavouritesContentProvider extends ContentProvider {
                 {
                     // successful insertion to the db
                     uriToReturn = ContentUris.withAppendedId(DatabaseContract.FavouriteMovies.CONTENT_URI,rows);
-                    // notify the contentResolver tha the uri has changed
+                    // notify the contentResolver that the uri has changed
                     getContext().getContentResolver().notifyChange(uri,null);
                     return uriToReturn;
                 }
@@ -172,7 +177,7 @@ public class FavouritesContentProvider extends ContentProvider {
 
                 try
                 {
-                    rowsDeleted = rowsDeleted = db.delete(DatabaseContract.FavouriteMovies.TABLE_NAME,selection, selectionArgs);
+                    rowsDeleted  = db.delete(DatabaseContract.FavouriteMovies.TABLE_NAME,selection, selectionArgs);
                     Log.d(DEBUG_TAG,"Deleted items  count = " + rowsDeleted);
                 }
                 catch (SQLException e)

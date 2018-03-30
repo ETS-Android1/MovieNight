@@ -214,11 +214,15 @@ public class MainScreenUiController {
     }
 
 
-
+    /**
+     * Method for hiding the Empty View for favourite movies
+     */
     public void hideEmptyFavouriteMoviesLayout() {
         mainScreen.findViewById(R.id.no_favourite_movies_layout).setVisibility(View.GONE);
     }
-
+    /**
+     * Method for showing the Empty View for favourite movies
+     */
     public void showEmptyFavouriteMoviesLayout() {
         mainScreen.findViewById(R.id.no_favourite_movies_layout).setVisibility(View.VISIBLE);
     }
@@ -231,8 +235,7 @@ public class MainScreenUiController {
      * if needed
      */
     public void fetchMovies()
-            {
-
+    {
         //Load Default Sort Order
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainScreen);
         String sortOrder = sharedPreferences.getString(mainScreen.getResources().getString(R.string.sort_order_key), POPULAR_PATH);
@@ -244,8 +247,6 @@ public class MainScreenUiController {
             MovieDbClient.makeRequest(mCallBack, sortOrder, pageToIndex);
             UIneedsUpdate = false;
         }
-
-
     }
 
 

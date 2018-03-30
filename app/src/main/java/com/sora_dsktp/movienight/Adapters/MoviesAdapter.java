@@ -54,16 +54,21 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
          void onMovieClicked(int moviePosition,Movie movie);
     }
 
-
+    /**
+     * This class is used as a data observer
+     */
     private class customObserver extends RecyclerView.AdapterDataObserver
     {
-        public customObserver() {
-        }
-
+        /**
+         * This method is triggered when a change happen's
+         * to the recyclerView . We use this method to show/hide
+         * empty/no favourite movies layout's for informing the user
+         */
         @Override
         public void onChanged() {
             super.onChanged();
             Log.e(DEBUG_TAG,"onChanged occured......");
+            // if the recyclerview has no items show the appropriate layout
             if(getItemCount() == 0)
             {
                 if(mMainScreenUiController.favouritesMode())
@@ -75,6 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                     mMainScreenUiController.showErrorLayout();
                 }
             }
+            // the itemCount of the recyclerView is >0 so , hide the layout's
             else
             {
                 mMainScreenUiController.hideErrorLayout();
@@ -178,6 +184,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public int getItemCount() {
         Log.d(DEBUG_TAG,"Item Size = " + mMovies.size());
+        // check the size and hide/show the empty layout's
         if(mMovies.size() == 0)
         {
             if(mMainScreenUiController.favouritesMode())

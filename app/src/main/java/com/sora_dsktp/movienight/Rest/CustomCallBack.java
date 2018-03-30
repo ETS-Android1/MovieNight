@@ -61,12 +61,8 @@ public class CustomCallBack<J> implements Callback<JsonMoviesApiModel> {
         //to the adapter and notify him
         if(!movies.isEmpty())
         {
-//            // Hide the error layout from the user
-//            mController.hideErrorLayout();
             // hide the loading indicator
             mController.hideLoadingIndicator();
-//            // hide the empty favourite layout if is shown from the user
-//            mController.hideEmptyFavouriteMoviesLayout();
             // notify the adapter
             mAdapter.pushTheDataToTheAdapter(movies);
             mAdapter.notifyDataSetChanged();

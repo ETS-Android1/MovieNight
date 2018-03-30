@@ -31,7 +31,7 @@ public class DatabaseContract
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     // Define the possible paths for accessing data in this contract
-    // This is the path for the "tasks" directory
+    // This is the path for the "favourite_movies" directory
     public static final String PATH_FAVOURITE_MOVIES = "favourite_movies";
 
 
@@ -47,8 +47,6 @@ public class DatabaseContract
         public static final String COLUMN_MOVIE_RATING = "movie_rating";
         public static final String COLUMN_MOVIE_DESCRIPTION = "movie_description";
         public static final String COLUMN_POSTER_PATH = "movie_poster_path";
-
-
     }
 
 

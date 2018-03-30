@@ -22,6 +22,11 @@ import com.sora_dsktp.movienight.R;
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class extends the BroadcastReceiver class and overrides the onReceive method
+ * which is called when a CONNECTIVITY_CHANGE action is broadcasted through the application
+ */
 public class InternetBroadcastReceiver  extends BroadcastReceiver
 {
 

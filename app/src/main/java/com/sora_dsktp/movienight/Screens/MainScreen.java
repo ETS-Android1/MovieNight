@@ -6,7 +6,6 @@
 package com.sora_dsktp.movienight.Screens;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -72,7 +71,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         // Set the toolbar title
         setActionBarTitle();
         //Create and register the Connectivity broadcast receiver
-        intantiateBroadcastReceivers();
+        instantiateBroadcastReceivers();
 
         //if favourite mode is enabled load the movies
         if(mController.favouritesMode()) mController.fetchFavouriteMovies();
@@ -125,7 +124,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
      * This method create's and registers the broadcast receiver.
      * This broadcast is called when a connectivity change occurs
      */
-    private void intantiateBroadcastReceivers()
+    private void instantiateBroadcastReceivers()
     {
         mBroadcastReceiver= new InternetBroadcastReceiver(mController);
         //create and register db change broadcast receiver
@@ -199,7 +198,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 mController.setUIneedsUpdate(true);
                 mAdapter.clearData();
                 mController.resetAPIindex();
-                Log.d("#UiCo","Fetching movies for sharedPreferences listener.....");
+                Log.d(DEBUG_TAG,"Fetching movies for sharedPreferences listener.....");
                 // Make the request to the API again using the appropriate "sort_order"
                 mController.fetchMovies();
             }
