@@ -55,7 +55,7 @@ public class InternetBroadcastReceiver  extends BroadcastReceiver
                 if(!mMainScreenUiController.favouritesMode())
                 {
                     Log.d(DEBUG_TAG,"Fetching movies from the broadcast receiver on receive method.....");
-                    mMainScreenUiController.fetchMovies();
+                    mMainScreenUiController.fetchMovies(false,false);
                 }
             }
         }

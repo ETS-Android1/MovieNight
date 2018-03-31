@@ -10,6 +10,7 @@ import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.support.v4.app.LoaderManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -18,8 +19,8 @@ import android.widget.RelativeLayout;
 import com.sora_dsktp.movienight.Model.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.CustomCallBack;
-import com.sora_dsktp.movienight.Rest.MovieDbClient;
+import com.sora_dsktp.movienight.Rest.MovieRetrofitCallback;
+import com.sora_dsktp.movienight.Rest.MovieClient;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 import com.sora_dsktp.movienight.Utils.Constants;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
@@ -38,7 +39,7 @@ public class MainScreenUiController {
     //Log tag for LogCat usage
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
     private final MainScreen mainScreen;
-    private final CustomCallBack mCallBack;
+    private final MovieRetrofitCallback mCallBack;
     //Decision Variables for updating the UI with data
     private boolean WeHaveInternet = true;
     private boolean FirstTimeFetch = true;
@@ -50,14 +51,18 @@ public class MainScreenUiController {
 
     private MoviesAdapter mAdapter;
 
+    public MoviesAdapter getmAdapter() {
+        return mAdapter;
+    }
+
     /**
      * Helper class containing method's for updating the
      * UI in MainScreen.java
      *
      * @param mainScreen the MainScreen object we need to access Activity method's
-     * @param callBack   the CustomCallBack object we need to make a request to the API
+     * @param callBack   the MovieRetrofitCallback object we need to make a request to the API
      */
-    public MainScreenUiController(MainScreen mainScreen, CustomCallBack callBack) {
+    public MainScreenUiController(MainScreen mainScreen, MovieRetrofitCallback callBack) {
         this.mainScreen = mainScreen;
         this.mCallBack = callBack;
     }
@@ -234,18 +239,30 @@ public class MainScreenUiController {
      * This method makes the request to the Movies db
      * if needed
      */
-    public void fetchMovies()
+    public void fetchMovies(boolean forceUpdate,boolean restartLoader)
     {
-        //Load Default Sort Order
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mainScreen);
-        String sortOrder = sharedPreferences.getString(mainScreen.getResources().getString(R.string.sort_order_key), POPULAR_PATH);
         if (UIneedsToBeUpdated() && pageToIndex != 1000) // page = 1000 is the last page so don't make any call to the API
         {
+            LoaderManager loaderManager = mainScreen.getSupportLoaderManager();
             Log.d(DEBUG_TAG, "Fetching movies from the API.....");
-            isLoading = true;
-            if (isLoading) showLoadingIndicator();
-            MovieDbClient.makeRequest(mCallBack, sortOrder, pageToIndex);
-            UIneedsUpdate = false;
+
+            //show the loading indicator indicating
+            //that data is being loaded
+            this.showLoadingIndicator();
+            //start Loaders
+            if(!forceUpdate && !restartLoader )loaderManager.initLoader(1,null,new MovieLoaders(mainScreen,this));
+
+
+            if(forceUpdate)
+            {
+                Log.d(DEBUG_TAG,"Loader is force loaded....");
+                if(loaderManager.getLoader(1) != null )  loaderManager.getLoader(1).forceLoad();
+            }
+            if(restartLoader)
+            {
+                Log.d(DEBUG_TAG,"Loader is restarted..");
+                loaderManager.restartLoader(1,null,new MovieLoaders(mainScreen,this));
+            }
         }
     }
 
@@ -261,12 +278,12 @@ public class MainScreenUiController {
                 "Value of mFirstTimeFetch = " + FirstTimeFetch);
         // If we have internet and the Ui needs update and its the first time the user opens the app
         // the return true and set the mFirstTimeFetch variable to false.
-        if (WeHaveInternet && UIneedsUpdate && FirstTimeFetch) {
-            FirstTimeFetch = false;
+        if (isWeHaveInternet() && isUIneedsUpdate() && isFirstTimeFetch()) {
+            setFirstTimeFetch(false);
             return true;
         }
         // If we wave internet and the UI needs  update then return true
-        else if (WeHaveInternet && UIneedsUpdate) return true;
+        else if (isUIneedsUpdate() && isWeHaveInternet()) return true;
             // In any other case return false
         else return false;
     }

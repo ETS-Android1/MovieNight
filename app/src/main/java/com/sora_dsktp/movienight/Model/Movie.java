@@ -37,6 +37,8 @@ public class Movie implements Parcelable {
     private String movieDescription;
     @SerializedName("release_date")
     private String releaseDate;
+    @SerializedName("id")
+    private int movieID;
 
     /**
      * Default Movie constructor
@@ -45,13 +47,25 @@ public class Movie implements Parcelable {
      * @param imagePath represents the path to the movie poster
      * @param movieDescription represents a movie synopsis
      * @param releaseDate represents the release date of the movie
+     * @param movieID represent the movie id inside the MovieDB database
+     *
      */
+    public Movie(int movieRating, String movieTitle, String imagePath, String movieDescription, String releaseDate,int movieID) {
+        this.movieRating = movieRating;
+        this.movieTitle = movieTitle;
+        this.imagePath = imagePath;
+        this.movieDescription = movieDescription;
+        this.releaseDate = releaseDate;
+        this.movieID = movieID;
+    }
+
     public Movie(int movieRating, String movieTitle, String imagePath, String movieDescription, String releaseDate) {
         this.movieRating = movieRating;
         this.movieTitle = movieTitle;
         this.imagePath = imagePath;
         this.movieDescription = movieDescription;
         this.releaseDate = releaseDate;
+        this.movieID = -1;
     }
 
     /**
@@ -67,7 +81,16 @@ public class Movie implements Parcelable {
                 " and the following description: " +
                 getMovieDescription() +
                 " and it was release on:" +
-                getReleaseDate();
+                getReleaseDate() +" and it has id = " + getMovieID();
+    }
+
+    public int getMovieID()
+    {
+        return movieID;
+    }
+
+    public void setMovieID(int movieID) {
+        this.movieID = movieID;
     }
 
     public float getMovieRating() {
@@ -127,6 +150,7 @@ public class Movie implements Parcelable {
         out.writeString(getMovieDescription());
         out.writeString(getImagePath());
         out.writeString(getReleaseDate());
+        out.writeInt(getMovieID());
 
     }
 
@@ -153,5 +177,6 @@ public class Movie implements Parcelable {
         setMovieDescription( in.readString());
         setImagePath(in.readString());
         setReleaseDate( in.readString());
+        setMovieID(in.readInt());
     }
 }

@@ -120,6 +120,7 @@ public class DetailScreenUiController
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
             super.onInsertComplete(token, cookie, uri);
 
+            //check to see if the insert was success by checking the Uri object
             if( uri != null)
             {
                 //Added successfully

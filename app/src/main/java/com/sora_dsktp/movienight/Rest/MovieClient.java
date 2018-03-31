@@ -5,11 +5,19 @@
 
 package com.sora_dsktp.movienight.Rest;
 
+import android.util.Log;
+
 import com.sora_dsktp.movienight.Model.JsonMoviesApiModel;
+import com.sora_dsktp.movienight.Model.Movie;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -24,16 +32,16 @@ import static com.sora_dsktp.movienight.Utils.Constants.BASE_URL;
  UDACITY ND programm.
  */
 
-public class MovieDbClient
+public class MovieClient
 {
 
     //Log tag for LogCat usage
-    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+    private  static  String DEBUG_TAG = "#MovieClient.java" ;
 
     /**
      * Interface defining a retrofit call
      */
-    public interface RetrofitCallInterface
+    public interface MovieRetrofit
      {
          //"kind" is either popular or top_rated
          @GET("movie/{sort}/")
@@ -42,11 +50,11 @@ public class MovieDbClient
 
     /**
      * Actual method for making a request to the Movie DB API using Retrofit library
-     * @param callBack callback object to handle the response from the server
      * @param sort_key sort order of getting the movies . Top rated or popular
      */
-     public static void makeRequest(CustomCallBack<JsonMoviesApiModel> callBack, String sort_key, int page)
+     public static ArrayList<Movie> makeRequest(String sort_key, int page)
      {
+         ArrayList<Movie> movies = new ArrayList<>();
          //Create a retrofit builder
          Retrofit.Builder builder = new Retrofit.Builder();
          //Add the base url of the API and a Gson converted to convert the response
@@ -54,10 +62,26 @@ public class MovieDbClient
          builder.baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
          // create a retrofit object
          Retrofit retrofit = builder.build();
-         RetrofitCallInterface client = retrofit.create(RetrofitCallInterface.class);
+         MovieRetrofit client = retrofit.create(MovieRetrofit.class);
          // create a call object
          Call<JsonMoviesApiModel> call = client.browseMovies(sort_key,API_KEY,page);
          // make a call to the server asynchronously
-         call.enqueue(callBack);
+         Log.d(DEBUG_TAG,"Making the request.........");
+         try
+         {
+             Log.d(DEBUG_TAG,"Got the response inside MovieClient.java");
+             Response<JsonMoviesApiModel> moviesApiModelResponse = call.execute();
+             if(moviesApiModelResponse.isSuccessful())
+             {
+                 movies = moviesApiModelResponse.body().getResults();
+                 return movies;
+             }
+         }
+         catch (IOException e)
+         {
+             e.printStackTrace();
+             Log.e(DEBUG_TAG,"There was an error with making the request to the movie API");
+         }
+         return movies;
      }
 }

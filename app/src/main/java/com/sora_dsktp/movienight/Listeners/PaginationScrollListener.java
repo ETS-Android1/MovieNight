@@ -7,6 +7,7 @@ package com.sora_dsktp.movienight.Listeners;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 /**
  * This file created by Georgios Kostogloudis
@@ -32,11 +33,16 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
         int totalItemCount = mLayoutManager.getItemCount();
         int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
-        if (!isLoading())
+        // If the user scroll down
+        if(dy>0)
         {
-            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0)
+            // if there is nothing loading from the API
+            if (!isLoading())
             {
-                loadMoreItems();
+
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    loadMoreItems();
+                }
             }
         }
     }

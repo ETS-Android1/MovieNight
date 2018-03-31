@@ -17,6 +17,10 @@ import android.widget.TextView;
 import com.sora_dsktp.movienight.Controllers.DetailScreenUiController;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
+import com.sora_dsktp.movienight.Rest.MovieReviewClient;
+import com.sora_dsktp.movienight.Rest.MovieReviewRetrofitCallback;
+import com.sora_dsktp.movienight.Rest.MovieVideoClient;
+import com.sora_dsktp.movienight.Rest.MovieVideoRetrofitCallback;
 import com.squareup.picasso.Picasso;
 
 import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
@@ -82,7 +86,22 @@ public class DetailsScreen extends AppCompatActivity
             getSupportActionBar().setTitle(mMovieClicked.getMovieTitle());
             //check to see if the movie is already marked as favourite
             mController.checkTheMovieOnDatabase(mMovieClicked);
+
+            getReviews(mMovieClicked);
+            getVideos(mMovieClicked);
         }
+
+    }
+
+    private void getVideos(Movie mMovieClicked) {
+        MovieVideoRetrofitCallback callback = new MovieVideoRetrofitCallback();
+        MovieVideoClient.makeRequest(String.valueOf(mMovieClicked.getMovieID()),callback);
+    }
+
+    private void getReviews(Movie mMovieClicked)
+    {
+        MovieReviewRetrofitCallback callback = new MovieReviewRetrofitCallback();
+        MovieReviewClient.makeRequest(callback, (String.valueOf(mMovieClicked.getMovieID())),1);
 
     }
 

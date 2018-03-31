@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,7 +25,7 @@ import com.sora_dsktp.movienight.BroadcastReceivers.InternetBroadcastReceiver;
 import com.sora_dsktp.movienight.Model.JsonMoviesApiModel;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.CustomCallBack;
+import com.sora_dsktp.movienight.Rest.MovieRetrofitCallback;
 import com.sora_dsktp.movienight.Settings.SettingsActivity;
 import com.sora_dsktp.movienight.BroadcastReceivers.DbBroadcastReceiver;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
@@ -41,11 +42,14 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     //Log tag for LogCat usage
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
     private static final int SPAN_COUNT = 3;   //How many movies in each row
-    private CustomCallBack mMoviesCallBack;
+    private MovieRetrofitCallback mMoviesCallBack;
     private BroadcastReceiver mBroadcastReceiver;
     private MoviesAdapter mAdapter;
     private MainScreenUiController mController;
+    private static final int FORECAST_LOADER_ID = 0;
     private DbBroadcastReceiver mDatabaseReceiver;
+    Parcelable listState;
+    RecyclerView mRvMovies;
 
 
     @Override
@@ -57,7 +61,7 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
 
         //Instantiate a custom Callback object passing in the adapter to populate
         // with data when we get a response from the Movies DB API
-        mMoviesCallBack = new CustomCallBack<JsonMoviesApiModel>(mAdapter);
+        mMoviesCallBack = new MovieRetrofitCallback<JsonMoviesApiModel>(mAdapter);
         // create an instance of UI controller
         mController = new MainScreenUiController(this, mMoviesCallBack);
         // set the adapter to the UI controller
@@ -73,10 +77,23 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         //Create and register the Connectivity broadcast receiver
         instantiateBroadcastReceivers();
 
+
         //if favourite mode is enabled load the movies
         if(mController.favouritesMode()) mController.fetchFavouriteMovies();
+
+        if(savedInstanceState!=null)
+        {
+//            Log.e(DEBUG_TAG,"This is executed..................");
+//            listState=savedInstanceState.getParcelable("ListState");
+//            mAdapter.getLayoutManager().onRestoreInstanceState(listState);
+        }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("ListState", mRvMovies.getLayoutManager().onSaveInstanceState());
+    }
 
     /**
      * Setup method for cleaner code in onCreate method
@@ -84,13 +101,13 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     private void setUpRecyclerView()
     {
         //Get Reference to recyclerView
-        RecyclerView rvMovies = findViewById(R.id.movies_rv);
+        mRvMovies = findViewById(R.id.movies_rv);
         //Create a layout manager
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, SPAN_COUNT);
         // set methods
-        rvMovies.setLayoutManager(mLayoutManager); // sets the layoutmanager
-        rvMovies.setAdapter(mAdapter); // set's the recyclerView's adapter
-        rvMovies.setOnScrollListener(new PaginationScrollListener(mLayoutManager) {
+        mRvMovies.setLayoutManager(mLayoutManager); // sets the layoutmanager
+        mRvMovies.setAdapter(mAdapter); // set's the recyclerView's adapter
+        mRvMovies.setOnScrollListener(new PaginationScrollListener(mLayoutManager) {
             @Override
             protected void loadMoreItems()
             {
@@ -102,9 +119,11 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                     // set the variable to true
                     // so we can fetch the movies
                     mController.setUIneedsUpdate(true);
+                    //show the loading indicator
+                    mController.showLoadingIndicator();
                     // pass as a parameter the page to index the API
                     Log.d(DEBUG_TAG,"fetching movies for load more method");
-                    mController.fetchMovies();
+                    mController.fetchMovies(true,false);
                 }
             }
 
@@ -199,8 +218,8 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 mAdapter.clearData();
                 mController.resetAPIindex();
                 Log.d(DEBUG_TAG,"Fetching movies for sharedPreferences listener.....");
-                // Make the request to the API again using the appropriate "sort_order"
-                mController.fetchMovies();
+                // restart the loader to make a new request with the sort preference
+                mController.fetchMovies(false,true);
             }
         }
     }

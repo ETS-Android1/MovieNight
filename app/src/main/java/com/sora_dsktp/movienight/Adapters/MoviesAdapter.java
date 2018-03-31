@@ -20,6 +20,7 @@ import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
@@ -117,6 +118,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public void clearData() {
         mMovies.clear();
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Movie>  getData()
+    {
+        return mMovies;
     }
 
     /**

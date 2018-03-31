@@ -32,13 +32,13 @@ import retrofit2.Response;
  * which is called when we get a response from the movie db API
  * @param <J>
  */
-public class CustomCallBack<J> implements Callback<JsonMoviesApiModel> {
+public class MovieRetrofitCallback<J> implements Callback<JsonMoviesApiModel> {
     //Log tag for LogCat usage
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
 
     private MoviesAdapter mAdapter;
     private MainScreenUiController mController;
-    public CustomCallBack(MoviesAdapter mAdapter)
+    public MovieRetrofitCallback(MoviesAdapter mAdapter)
     {
         this.mAdapter = mAdapter;
     }

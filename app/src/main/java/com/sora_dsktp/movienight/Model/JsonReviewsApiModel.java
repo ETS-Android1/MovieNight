@@ -8,23 +8,17 @@ package com.sora_dsktp.movienight.Model;
 import java.util.ArrayList;
 
 /**
- This file created by Georgios Kostogloudis on 23/2/2018
- and was last modified on 24/2/2018.
- The name of the project is MovieNight and it was created as part of
- UDACITY ND programm.
+ * This file created by Georgios Kostogloudis
+ * and was last modified on 31/3/2018.
+ * The name of the project is MovieNight and it was created as part of
+ * UDACITY ND programm.
  */
-
-
-/**
- * This class is being used to describe
- * the json response schema from the API request
- */
-public class JsonMoviesApiModel
+public class JsonReviewsApiModel
 {
     private int page;
     private int total_results;
     private int total_pages;
-    private ArrayList<Movie> results;
+    private ArrayList<Review> results;
 
     public int getPage() {
         return page;
@@ -42,7 +36,7 @@ public class JsonMoviesApiModel
      * get method for property results
      * @return Returns an ArrayList<Movie>
      */
-    public ArrayList<Movie> getResults() {
+    public ArrayList<Review> getResults() {
         return results;
     }
 }

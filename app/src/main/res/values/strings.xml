@@ -49,6 +49,8 @@
     <string name="empty_view_message">Movie list is empty , try connecting to the internet</string>
     <string name="no_connection_message">No Internet Connection</string>
     <string name="no_favourite_movie_message">You haven\'t any favourite movie . Try adding a new one by tapping the hear button on a movie.</string>
+    <string name="tv_reviews_label">Reviews</string>
+    <string name="tv_videos_label">Related Videos</string>
 
 
 </resources>
