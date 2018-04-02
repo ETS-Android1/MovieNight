@@ -9,8 +9,10 @@ import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -19,15 +21,12 @@ import android.widget.RelativeLayout;
 import com.sora_dsktp.movienight.Model.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.MovieRetrofitCallback;
-import com.sora_dsktp.movienight.Rest.MovieClient;
+import com.sora_dsktp.movienight.Rest.MovieLoaders;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 import com.sora_dsktp.movienight.Utils.Constants;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
 
 import java.util.ArrayList;
-
-import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
 
 /**
  * This file created by Georgios Kostogloudis
@@ -35,11 +34,16 @@ import static com.sora_dsktp.movienight.Utils.Constants.POPULAR_PATH;
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
  */
+
+
+/**
+ * Helper class containing method's for updating the
+ * UI in MainScreen.java
+ */
 public class MainScreenUiController {
     //Log tag for LogCat usage
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
     private final MainScreen mainScreen;
-    private final MovieRetrofitCallback mCallBack;
     //Decision Variables for updating the UI with data
     private boolean WeHaveInternet = true;
     private boolean FirstTimeFetch = true;
@@ -50,32 +54,49 @@ public class MainScreenUiController {
     private boolean isLoading = false;
 
     private MoviesAdapter mAdapter;
+    //The following fields is used to restore the scroll position of the recyclerView
+    private RecyclerView mRecyclerView;
+    private Parcelable listState;
 
-    public MoviesAdapter getmAdapter() {
-        return mAdapter;
-    }
 
     /**
-     * Helper class containing method's for updating the
-     * UI in MainScreen.java
-     *
-     * @param mainScreen the MainScreen object we need to access Activity method's
-     * @param callBack   the MovieRetrofitCallback object we need to make a request to the API
+     * Defaults constructor
+     * @param mainScreen a reference to the mainScree activity
      */
-    public MainScreenUiController(MainScreen mainScreen, MovieRetrofitCallback callBack) {
+    public MainScreenUiController(MainScreen mainScreen) {
         this.mainScreen = mainScreen;
-        this.mCallBack = callBack;
     }
 
     /**
-     * Increments the current page we are indexing on the API
+     * This method is a getter method from the DefaultSharedPreferences
+     * @return
+     */
+    public boolean getScrollPosNeedsRestoreFromPref() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainScreen);
+        boolean restoreSroll = preferences.getBoolean(mainScreen.getResources().getString(R.string.restore_scroll_boolean),false);
+        return restoreSroll;
+    }
+
+    /**
+     * This method is a setter method for a boolean value to the DefaultSharedPreferences.
+     * This boolean value is used to restore the scroll position of the recyclerView
+     * @param needsRestore the boolean value to save on the preferences
+     */
+    public void setScrollPositionToPreferences(boolean needsRestore)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainScreen);
+        preferences.edit().putBoolean(mainScreen.getResources().getString(R.string.restore_scroll_boolean),needsRestore).apply();
+    }
+
+    /**
+     * Increments the current page we are indexing on the moviesAPI
      */
     public void incrementAPIindex() {
         pageToIndex++;
     }
 
     /**
-     * Reset's the page index to the first page
+     * Reset's the page index to the first page of the movieAPI
      */
     public void resetAPIindex() {
         pageToIndex = 1;
@@ -114,6 +135,26 @@ public class MainScreenUiController {
         ProgressBar progressBar = mainScreen.findViewById(R.id.main_screen_loading_indicator);
         progressBar.setVisibility(View.GONE);
     }
+
+    /**
+     * Method for restoring the scroll position of the movies recyclerView
+     */
+    public void restoreScrollPostition()
+    {
+        //Get the value from the preferences
+        boolean ScrollPosNeedsRestore = getScrollPosNeedsRestoreFromPref();
+        //if the list state isn't null and the scroll position needs to be restored
+        // then restore the scroll position
+        if(getListState()!=null && ScrollPosNeedsRestore)
+        {
+            //restore the scroll position
+            getRecyclerView().getLayoutManager().onRestoreInstanceState(listState);
+            //the scroll boolean needs to be set to false until there is a device configuration
+            setScrollPositionToPreferences(false);
+        }
+    }
+
+
 
     /**
      * Helper class for querying the database in
@@ -405,6 +446,46 @@ public class MainScreenUiController {
      */
     public boolean favouritesMode() {
         return getSortOrder().equals(mainScreen.getResources().getString(R.string.sort_favourite_movies_value));
+    }
+
+    /**
+     * Setter method for field listState
+     * @param listState the listState object to set equal to the field listState
+     */
+    public void setListState(Parcelable listState) {
+        this.listState = listState;
+    }
+
+    /**
+     * Getter method for listState object
+     * @return the Parcelable object ListState
+     */
+    public Parcelable getListState() {
+        return listState;
+    }
+
+    /**
+     * Getter method for the field mRecyclerView
+     * @return the RecyclerView object
+     */
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
+    /**
+     * Setter method for the field mRecyclerView
+     * @param mRecyclerView the recyclerView object to set equal to the field mRecyclerView
+     */
+    public void setRecyclerView(RecyclerView mRecyclerView) {
+        this.mRecyclerView = mRecyclerView;
+    }
+
+    /**
+     * Getter method for the field mAdapter
+     * @return the MoviesAdapter object
+     */
+    public MoviesAdapter getAdapter() {
+        return mAdapter;
     }
 }
 

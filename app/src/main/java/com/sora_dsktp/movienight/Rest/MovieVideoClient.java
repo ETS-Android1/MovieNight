@@ -5,10 +5,17 @@
 
 package com.sora_dsktp.movienight.Rest;
 
+import android.util.Log;
+
 import com.sora_dsktp.movienight.Model.JsonVideosApiModel;
+import com.sora_dsktp.movienight.Model.Video;
 import com.sora_dsktp.movienight.Utils.Constants;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
@@ -24,15 +31,15 @@ import retrofit2.http.Query;
 public class MovieVideoClient
 {
     //Log tag for LogCat usage
-    private final String DEBUG_TAG = "#" + getClass().getSimpleName();
+    private static final String DEBUG_TAG = "#MovieVideoClient.java";
 
     private interface MovieVideoRetrofit
     {
         @GET("movie/{movie_id}/videos")
-        Call<JsonVideosApiModel> browseMovies(@Path("movie_id")String movieID, @Query("api_key")String API_KEY);
+        Call<JsonVideosApiModel> browseMovies(@Path("movie_id")int movieID, @Query("api_key")String API_KEY);
     }
 
-    public static void makeRequest(String movieID,MovieVideoRetrofitCallback<JsonVideosApiModel> callback)
+    public static ArrayList<Video> makeRequest(int movieID)
     {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
@@ -43,6 +50,26 @@ public class MovieVideoClient
 
         Call<JsonVideosApiModel> movieVideosCall = client.browseMovies(movieID,Constants.API_KEY);
 
-        movieVideosCall.enqueue(callback);
+        ArrayList<Video> results = new ArrayList<>();
+        try
+        {
+            Log.d(DEBUG_TAG,"Making the request for the video....");
+            Response<JsonVideosApiModel> apiResponse = movieVideosCall.execute();
+            if(apiResponse.isSuccessful())
+            {
+                Log.d(DEBUG_TAG,"We have a response about the video....");
+                results = apiResponse.body().getResults();
+            }
+            else
+            {
+                //The response from the API contains errors
+                Log.e(DEBUG_TAG,"Error message: " + apiResponse.message());
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return results;
     }
 }

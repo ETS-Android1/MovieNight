@@ -21,13 +21,18 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.sora_dsktp.movienight.Adapters.VideoAdapter;
 import com.sora_dsktp.movienight.Model.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
+import com.sora_dsktp.movienight.Rest.ReviewLoader;
+import com.sora_dsktp.movienight.Rest.VideoLoader;
 import com.sora_dsktp.movienight.Screens.DetailsScreen;
 
 import static com.sora_dsktp.movienight.BroadcastReceivers.DbBroadcastReceiver.ACTION_DATABASE_CHANGED;
@@ -40,6 +45,7 @@ public class DetailScreenUiController
 {
     private final DetailsScreen mDetailScreen;
     private final AsyncQueryHelper mQueryHelper;
+    private  VideoAdapter mVideoAdapter;
     private boolean mIsFavourite = false;
     private final String DEBUG_TAG = getClass().getSimpleName();
 
@@ -88,6 +94,25 @@ public class DetailScreenUiController
 
         // Database operation must run on a background thread
         mQueryHelper.startDelete(-1,null,DatabaseContract.FavouriteMovies.CONTENT_URI,selection,selectionArgs);
+    }
+
+    public void getMovieReviews(Movie mMovieClicked)
+    {
+        int movieID = mMovieClicked.getMovieID();
+        LoaderManager loaderManager = mDetailScreen.getSupportLoaderManager();
+        Bundle bundle = new Bundle();
+        bundle.putInt("movie_id",movieID);
+        loaderManager.initLoader(3,bundle,new ReviewLoader(mDetailScreen,this));
+
+    }
+
+    public void getMovieVideos(Movie mMovieClicked)
+    {
+        int movieID = mMovieClicked.getMovieID();
+        LoaderManager loaderManager = mDetailScreen.getSupportLoaderManager();
+        Bundle bundle = new Bundle();
+        bundle.putInt("movie_id",movieID);
+        loaderManager.initLoader(2,bundle,new VideoLoader(mDetailScreen,this));
     }
 
 
@@ -203,5 +228,11 @@ public class DetailScreenUiController
         return mIsFavourite;
     }
 
+    public void setmVideoAdapter(VideoAdapter mVideoAdapter) {
+        this.mVideoAdapter = mVideoAdapter;
+    }
 
+    public VideoAdapter getmVideoAdapter() {
+        return mVideoAdapter;
+    }
 }

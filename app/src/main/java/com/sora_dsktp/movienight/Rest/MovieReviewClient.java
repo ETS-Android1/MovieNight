@@ -38,10 +38,10 @@ public class MovieReviewClient
 
     /**
      * Actual method for making a request to the Movie DB API using Retrofit library
-     * @param callBack callback object to handle the response from the server
      * @param movieID the movie id which we get the reviews for.
+     * @param page the page to index on the API
      */
-    public static void makeRequest(MovieReviewRetrofitCallback<JsonReviewsApiModel> callBack, String movieID, int page)
+    public static void makeRequest( String movieID, int page)
     {
         //Create a retrofit builder
         Retrofit.Builder builder = new Retrofit.Builder();
@@ -54,7 +54,7 @@ public class MovieReviewClient
         // create a call object
         Call<JsonReviewsApiModel> call = client.browseMovieReviews(movieID,API_KEY,page);
         // make a call to the server asynchronously
-        call.enqueue(callBack);
+
     }
 
 

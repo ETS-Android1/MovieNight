@@ -65,7 +65,7 @@ public class MovieClient
          MovieRetrofit client = retrofit.create(MovieRetrofit.class);
          // create a call object
          Call<JsonMoviesApiModel> call = client.browseMovies(sort_key,API_KEY,page);
-         // make a call to the server asynchronously
+         // make a call to the server synchronously
          Log.d(DEBUG_TAG,"Making the request.........");
          try
          {
@@ -73,6 +73,8 @@ public class MovieClient
              Response<JsonMoviesApiModel> moviesApiModelResponse = call.execute();
              if(moviesApiModelResponse.isSuccessful())
              {
+                 // the request hasn't any errors so save the
+                 // results inside movie list
                  movies = moviesApiModelResponse.body().getResults();
                  return movies;
              }

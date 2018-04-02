@@ -22,10 +22,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.sora_dsktp.movienight.BroadcastReceivers.InternetBroadcastReceiver;
-import com.sora_dsktp.movienight.Model.JsonMoviesApiModel;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.MovieRetrofitCallback;
 import com.sora_dsktp.movienight.Settings.SettingsActivity;
 import com.sora_dsktp.movienight.BroadcastReceivers.DbBroadcastReceiver;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
@@ -42,32 +40,33 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     //Log tag for LogCat usage
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
     private static final int SPAN_COUNT = 3;   //How many movies in each row
-    private MovieRetrofitCallback mMoviesCallBack;
     private BroadcastReceiver mBroadcastReceiver;
     private MoviesAdapter mAdapter;
     private MainScreenUiController mController;
     private static final int FORECAST_LOADER_ID = 0;
     private DbBroadcastReceiver mDatabaseReceiver;
-    Parcelable listState;
-    RecyclerView mRvMovies;
+    private Parcelable listState; // this Parcelable contain's the bundle from the recyclerView's layout manager onSavedInstanceState and is used to restore the scroll position
+    private RecyclerView mRvMovies;
 
 
+    /**
+     * This method is called when the activity is created
+     * @param savedInstanceState a Bundle object containing data that was saved when the activity was destroyed
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen_layout);
+
         final ArrayList<Movie> movies = new ArrayList<>(); // ArrayList to use to store the movies
         mAdapter = new MoviesAdapter(movies,this,this); // Adapter for the movies
 
-        //Instantiate a custom Callback object passing in the adapter to populate
-        // with data when we get a response from the Movies DB API
-        mMoviesCallBack = new MovieRetrofitCallback<JsonMoviesApiModel>(mAdapter);
+
         // create an instance of UI controller
-        mController = new MainScreenUiController(this, mMoviesCallBack);
+        mController = new MainScreenUiController(this);
         // set the adapter to the UI controller
         mController.setAdapter(mAdapter);
-        // set ui controller on callback from API
-        mMoviesCallBack.setUIcontroller(mController);
+
         // set the mainScreenUicontroller to the adapter
         mAdapter.setUiController(mController);
 
@@ -81,18 +80,35 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
         //if favourite mode is enabled load the movies
         if(mController.favouritesMode()) mController.fetchFavouriteMovies();
 
+
+        //Check the savedInstanceState bundle
         if(savedInstanceState!=null)
         {
-//            Log.e(DEBUG_TAG,"This is executed..................");
-//            listState=savedInstanceState.getParcelable("ListState");
-//            mAdapter.getLayoutManager().onRestoreInstanceState(listState);
+            // get the parcelable from the bundle
+            listState = savedInstanceState.getParcelable(getString(R.string.list_state));
+            // we need to restore the scroll so set the boolean to true
+            mController.setScrollPositionToPreferences(true);
+            // set the following fields to the UI controller for later use in onLoadFinished() method of the MovieLoader
+            mController.setRecyclerView(mRvMovies);
+            mController.setListState(listState);
+
         }
+
     }
 
+    /**
+     * This method is executed when activity's OnDestroy() is called .
+     * This method is used to save the scroll position of the recyclerView
+     * so we can restore it on Activity's recreation
+     * @param outState The bundle which will be send when the activity is re-created .
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ListState", mRvMovies.getLayoutManager().onSaveInstanceState());
+        //Save in the outState bundle the layoutManager's  onSaveInstanceState bundle
+        outState.putParcelable(getString(R.string.list_state), mRvMovies.getLayoutManager().onSaveInstanceState());
+        //Save a boolean indicating that a restore scroll position is required
+        outState.putBoolean(getString(R.string.restore_scroll_boolean),true);
     }
 
     /**

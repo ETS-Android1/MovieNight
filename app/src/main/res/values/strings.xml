@@ -51,6 +51,8 @@
     <string name="no_favourite_movie_message">You haven\'t any favourite movie . Try adding a new one by tapping the hear button on a movie.</string>
     <string name="tv_reviews_label">Reviews</string>
     <string name="tv_videos_label">Related Videos</string>
+    <string name="restore_scroll_boolean">restore_scorll_position</string>
+    <string name="list_state">ListState</string>
 
 
 </resources>
