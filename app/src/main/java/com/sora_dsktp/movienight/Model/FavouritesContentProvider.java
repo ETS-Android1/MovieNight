@@ -125,7 +125,6 @@ public class FavouritesContentProvider extends ContentProvider {
             case FAV_MOVIES:
             {
                 SQLiteDatabase db = mDbHelper.getWritableDatabase();
-                Log.d("tset",db.getClass().toString());
                 long rows = db.insert(DatabaseContract.FavouriteMovies.TABLE_NAME,null,values);
                 if(rows>0)
                 {

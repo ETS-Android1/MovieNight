@@ -21,8 +21,6 @@ import com.sora_dsktp.movienight.Screens.DetailsScreen;
 
 import java.util.ArrayList;
 
-import javax.crypto.spec.DESedeKeySpec;
-
 /**
  * This file created by Georgios Kostogloudis
  * and was last modified on 1/4/2018.
@@ -54,10 +52,21 @@ public class VideoLoader implements LoaderManager.LoaderCallbacks<ArrayList<Vide
     public void onLoadFinished(@NonNull Loader<ArrayList<Video>> loader, ArrayList<Video> data)
     {
         //Load is finished do something with the results
-        VideoAdapter adapter = sController.getmVideoAdapter();
+        Log.d(DEBUG_TAG,"onLoadFinished for videos...");
+        VideoAdapter adapter = sController.getVideoAdapter();
 
-        adapter.addData(data);
-        adapter.notifyDataSetChanged();
+        if(data.size() == 0)
+        {
+            sController.showEmptyVideosLayout();
+        }
+        else
+        {
+            adapter.addData(data);
+            adapter.notifyDataSetChanged();
+            sController.hideEmptyVideosLayout();
+        }
+
+
 
     }
 
@@ -83,7 +92,7 @@ public class VideoLoader implements LoaderManager.LoaderCallbacks<ArrayList<Vide
         public ArrayList<Video> loadInBackground()
         {
             Log.d(DEBUG_TAG,"loadInBackgournd is executed for Videos....");
-            return MovieVideoClient.makeRequest(mArgs.getInt("movie_id"));
+            return VideoClient.makeRequest(mArgs.getInt("movie_id"));
         }
 
         @Override

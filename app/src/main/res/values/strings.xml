@@ -53,6 +53,13 @@
     <string name="tv_videos_label">Related Videos</string>
     <string name="restore_scroll_boolean">restore_scorll_position</string>
     <string name="list_state">ListState</string>
+    <string name="share_video_action">Share</string>
+    <string name="movie_review_sample_text">This movie was excellent. The plot was mind - blowing . It was one of the best movies I\'ve seen the last year . I really hope it will get a sequel . I think that the cast starring had to do much for the success of the movie . They was very dynamic and passionate and they got into the skin of their character</string>
+    <string name="movie_review_sample_author_text">George Kostogloudis</string>
+    <string name="review_author_text">by</string>
+    <string name="no_videos_found_message">No video\'s found for this movie</string>
+    <string name="no_reviews_message">There are no review\'s for this movie</string>
+    <string name="MOVIE_ID_BUNDLE_KEY">movie_id</string>
 
 
 </resources>

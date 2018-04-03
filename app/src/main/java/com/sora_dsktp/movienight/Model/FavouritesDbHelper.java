@@ -38,6 +38,7 @@ public class FavouritesDbHelper extends SQLiteOpenHelper {
                 DatabaseContract.FavouriteMovies.COLUMN_MOVIE_DESCRIPTION + " TEXT NOT NULL, " +
                 DatabaseContract.FavouriteMovies.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 DatabaseContract.FavouriteMovies.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+                DatabaseContract.FavouriteMovies.COLUMN_MOVIE_ID + " TEXT NOT NULL, " +
                 DatabaseContract.FavouriteMovies.COLUMN_MOVIE_RATING + " REAL NOT NULL  " +  ");";
         // create the database by executing the sql string
         db.execSQL(SQL_CREATE_FAVOURITE_TABLE);

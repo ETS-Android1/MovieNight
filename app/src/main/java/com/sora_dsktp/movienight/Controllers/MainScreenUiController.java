@@ -103,38 +103,6 @@ public class MainScreenUiController {
     }
 
 
-    /**
-     * Show's the empty layout when data isn't available
-     */
-    public void showErrorLayout() {
-        RelativeLayout errorLayout = mainScreen.findViewById(R.id.error_display_layout);
-        errorLayout.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Hide's the empty layout when data is available
-     */
-    public void hideErrorLayout() {
-        RelativeLayout errorLayout = mainScreen.findViewById(R.id.error_display_layout);
-        errorLayout.setVisibility(View.GONE);
-    }
-
-    /**
-     * Display's on screen a loading circle
-     */
-    public void showLoadingIndicator() {
-        ProgressBar progressBar = mainScreen.findViewById(R.id.main_screen_loading_indicator);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Hide's the loading circle from the screen when
-     * loading data is finished
-     */
-    public void hideLoadingIndicator() {
-        ProgressBar progressBar = mainScreen.findViewById(R.id.main_screen_loading_indicator);
-        progressBar.setVisibility(View.GONE);
-    }
 
     /**
      * Method for restoring the scroll position of the movies recyclerView
@@ -197,6 +165,7 @@ public class MainScreenUiController {
                             int ratingColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_RATING);
                             int releaseDateColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_RELEASE_DATE);
                             int posterPathColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_POSTER_PATH);
+                            int movieIDPathColumnIndex = cursor.getColumnIndex(DatabaseContract.FavouriteMovies.COLUMN_MOVIE_ID);
 
                             //first set of results
                             String movieTitle = cursor.getString(titleColumnIndex);
@@ -204,8 +173,9 @@ public class MainScreenUiController {
                             String movieDate = cursor.getString(releaseDateColumnIndex);
                             String posterPath = cursor.getString(posterPathColumnIndex);
                             int movieRating = cursor.getInt(ratingColumnIndex);
+                            int movieID = cursor.getInt(movieIDPathColumnIndex);
                             // create a new object Movie and add it to the ArrayList
-                            movies.add(new Movie(movieRating, movieTitle, posterPath, movieDesc, movieDate));
+                            movies.add(new Movie(movieRating, movieTitle, posterPath, movieDesc, movieDate,movieID));
 
                             //Continue to query through the next set of results
                             while (cursor.moveToNext()) {
@@ -214,8 +184,10 @@ public class MainScreenUiController {
                                 movieDate = cursor.getString(releaseDateColumnIndex);
                                 posterPath = cursor.getString(posterPathColumnIndex);
                                 movieRating = cursor.getInt(ratingColumnIndex);
+                                movieID = cursor.getInt(movieIDPathColumnIndex);
+
                                 // create a new object Movie and add it to the ArrayList
-                                movies.add(new Movie(movieRating, movieTitle, posterPath, movieDesc, movieDate));
+                                movies.add(new Movie(movieRating, movieTitle, posterPath, movieDesc, movieDate,movieID));
                             }
                         }
                         //Close the cursor to avoid memory leak
@@ -229,6 +201,8 @@ public class MainScreenUiController {
                             mAdapter.notifyDataSetChanged();
                             // hide the loading indicator
                             hideLoadingIndicator();
+                            //restore the scroll position
+                            restoreScrollPostition();
                         }
                         else
                         {
@@ -328,6 +302,40 @@ public class MainScreenUiController {
             // In any other case return false
         else return false;
     }
+
+    /**
+     * Show's the empty layout when data isn't available
+     */
+    public void showErrorLayout() {
+        RelativeLayout errorLayout = mainScreen.findViewById(R.id.error_display_layout);
+        errorLayout.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hide's the empty layout when data is available
+     */
+    public void hideErrorLayout() {
+        RelativeLayout errorLayout = mainScreen.findViewById(R.id.error_display_layout);
+        errorLayout.setVisibility(View.GONE);
+    }
+
+    /**
+     * Display's on screen a loading circle
+     */
+    public void showLoadingIndicator() {
+        ProgressBar progressBar = mainScreen.findViewById(R.id.main_screen_loading_indicator);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hide's the loading circle from the screen when
+     * loading data is finished
+     */
+    public void hideLoadingIndicator() {
+        ProgressBar progressBar = mainScreen.findViewById(R.id.main_screen_loading_indicator);
+        progressBar.setVisibility(View.GONE);
+    }
+
 
 
     /**

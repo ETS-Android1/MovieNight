@@ -118,6 +118,8 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
     {
         //Get Reference to recyclerView
         mRvMovies = findViewById(R.id.movies_rv);
+        //improves performance
+        mRvMovies.setHasFixedSize(true);
         //Create a layout manager
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, SPAN_COUNT);
         // set methods

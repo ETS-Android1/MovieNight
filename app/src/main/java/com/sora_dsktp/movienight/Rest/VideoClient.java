@@ -28,10 +28,10 @@ import retrofit2.http.Query;
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
  */
-public class MovieVideoClient
+public class VideoClient
 {
     //Log tag for LogCat usage
-    private static final String DEBUG_TAG = "#MovieVideoClient.java";
+    private static final String DEBUG_TAG = "#VideoClient.java";
 
     private interface MovieVideoRetrofit
     {
@@ -46,7 +46,7 @@ public class MovieVideoClient
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        MovieVideoClient.MovieVideoRetrofit client = retrofit.create(MovieVideoRetrofit.class);
+        VideoClient.MovieVideoRetrofit client = retrofit.create(MovieVideoRetrofit.class);
 
         Call<JsonVideosApiModel> movieVideosCall = client.browseMovies(movieID,Constants.API_KEY);
 
@@ -59,11 +59,14 @@ public class MovieVideoClient
             {
                 Log.d(DEBUG_TAG,"We have a response about the video....");
                 results = apiResponse.body().getResults();
+
             }
             else
             {
                 //The response from the API contains errors
                 Log.e(DEBUG_TAG,"Error message: " + apiResponse.message());
+                Log.e(DEBUG_TAG,"Error code = " + apiResponse.code());
+                Log.e(DEBUG_TAG,"Response to string = " + apiResponse.toString());
             }
         }
         catch (IOException e)

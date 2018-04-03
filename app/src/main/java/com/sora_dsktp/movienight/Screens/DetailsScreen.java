@@ -5,20 +5,28 @@
 
 package com.sora_dsktp.movienight.Screens;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sora_dsktp.movienight.Adapters.ReviewAdapter;
 import com.sora_dsktp.movienight.Adapters.VideoAdapter;
 import com.sora_dsktp.movienight.Controllers.DetailScreenUiController;
 import com.sora_dsktp.movienight.Model.Movie;
+import com.sora_dsktp.movienight.Model.Review;
 import com.sora_dsktp.movienight.Model.Video;
 import com.sora_dsktp.movienight.R;
 import com.squareup.picasso.Picasso;
@@ -26,6 +34,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
+import static com.sora_dsktp.movienight.Utils.Constants.YOUTUBE_VIDEO_URL;
 
 /**
  This file created by Georgios Kostogloudis
@@ -40,7 +49,7 @@ import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;
  * and set's the values of the textview's and the imageview on
  * this layout
  */
-public class DetailsScreen extends AppCompatActivity
+public class DetailsScreen extends AppCompatActivity implements VideoAdapter.videoClickListener
 {
     //Log tag for LogCat usage
     private final String DEBUG_TAG = "#" + getClass().getSimpleName();
@@ -50,6 +59,7 @@ public class DetailsScreen extends AppCompatActivity
     private int mMovieAdapterPosition;
     private DetailScreenUiController mController;
     private VideoAdapter mVideoAdapter;
+    private ReviewAdapter mReviewAdapter;
 
 
     @Override
@@ -91,14 +101,23 @@ public class DetailsScreen extends AppCompatActivity
             mController.checkTheMovieOnDatabase(mMovieClicked);
 
             ArrayList<Video> videoList = new ArrayList<>();
-            mVideoAdapter = new VideoAdapter(this,videoList);
+            mVideoAdapter = new VideoAdapter(this,videoList,this);
             RecyclerView rvVideos = findViewById(R.id.rv_videos);
             LinearLayoutManager manager = new LinearLayoutManager(this);
             manager.setOrientation(LinearLayoutManager.HORIZONTAL);
             rvVideos.setLayoutManager(manager);
             rvVideos.setAdapter(mVideoAdapter);
 
-            mController.setmVideoAdapter(mVideoAdapter);
+            mController.setVideoAdapter(mVideoAdapter);
+
+            ArrayList<Review> reviewList = new ArrayList<>();
+            mReviewAdapter = new ReviewAdapter(this,reviewList);
+            RecyclerView rvReviews = findViewById(R.id.rv_reviews);
+
+            rvReviews.setLayoutManager(new LinearLayoutManager(this));
+            rvReviews.setAdapter(mReviewAdapter);
+
+            mController.setReviewAdapter(mReviewAdapter);
 
             mController.getMovieReviews(mMovieClicked);
             mController.getMovieVideos(mMovieClicked);
@@ -106,6 +125,33 @@ public class DetailsScreen extends AppCompatActivity
 
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details_screen_toolbar_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int itemID = item.getItemId();
+        switch (itemID)
+        {
+            case R.id.action_share_movie_trailer:
+            {
+                //Share button clicked
+
+                //Create an intent and share the first movie trailer if it exists
+
+                return true;
+            }
+            default:
+            {
+                return false;
+            }
+        }
+    }
 
     public Movie getmMovieClicked() {
         return mMovieClicked;
@@ -117,12 +163,6 @@ public class DetailsScreen extends AppCompatActivity
 
     /**
      * This method handle's the click on the heart button
-     * It creates a content values object to store a Movie object inside it
-     * Then in a background thread using a runnable object it call's the content's
-     * resolver method insert to store the movie object to  the local SQlite database and
-     * if the insert is successful it calss the paintHeartButton to make the heart RED indicating that
-     * the movie is now a "favourite movie" . If the heart button is already RED meaning the movie is already favourite
-     * then it removes the movie from the database using again content's resolver delete() method in a background thread
      * @param view The view that was clicked , in this case an ImageButton
      */
     public void favouriteButtonClicked(View view)
@@ -134,4 +174,30 @@ public class DetailsScreen extends AppCompatActivity
            else mController.deleteTheMovieFromDatabase(mMovieClicked);
     }
 
+    /**
+     * OnClick method for the video.This method is triggered when the user
+     * click's on a video , then we create an Intent object and we start to play the video
+     * either on Youtube App or the browser
+     * @param youtubeKey
+     */
+    @Override
+    public void onClick(String youtubeKey)
+    {
+        String videoURL = YOUTUBE_VIDEO_URL + youtubeKey;
+        //Intent for the Youtube App
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW);
+        youtubeIntent.setData( Uri.parse("vnd.youtube:" + youtubeKey)); //set the data equal to the video url on the youtube
+        //Intent for the Browser App
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+        browserIntent.setData(Uri.parse(videoURL)); //set the data equal to the video url on the youtube
+        //If the Youtube application is not found start the browser intent
+        try
+        {
+            startActivity(youtubeIntent);
+        }
+        catch (ActivityNotFoundException ex)
+        {
+            startActivity(browserIntent);
+        }
+    }
 }

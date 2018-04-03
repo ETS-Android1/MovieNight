@@ -47,6 +47,7 @@ public class DatabaseContract
         public static final String COLUMN_MOVIE_RATING = "movie_rating";
         public static final String COLUMN_MOVIE_DESCRIPTION = "movie_description";
         public static final String COLUMN_POSTER_PATH = "movie_poster_path";
+        public static final String COLUMN_MOVIE_ID = "movie_id"; // not the primary id just the movie ID from the Movies API DB
     }
 
 

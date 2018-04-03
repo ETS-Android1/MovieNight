@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright © 2018 by Georgios Kostogloudis
+  ~ All rights reserved.
+  -->
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/tv_review_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:layout_margin="4dp"
+            tools:text="@string/movie_review_sample_author_text"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tv_review_author"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:background="#393838" />
+
+        <TextView
+            android:id="@+id/tv_review_content"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:fontFamily="@font/delius"
+            android:layout_below="@+id/tv_review_author"
+            tools:text="@string/movie_review_sample_text" />
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

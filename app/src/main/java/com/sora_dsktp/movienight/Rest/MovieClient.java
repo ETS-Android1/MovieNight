@@ -58,7 +58,7 @@ public class MovieClient
          //Create a retrofit builder
          Retrofit.Builder builder = new Retrofit.Builder();
          //Add the base url of the API and a Gson converted to convert the response
-         //into Movie object
+         //into JsonMoviesApiModel object
          builder.baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create());
          // create a retrofit object
          Retrofit retrofit = builder.build();

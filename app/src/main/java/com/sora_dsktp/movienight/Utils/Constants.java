@@ -20,9 +20,14 @@ import com.sora_dsktp.movienight.BuildConfig;
 public class Constants
 {
     // Constants used across the Application
+    public static final String API_KEY = BuildConfig.THEMOVIEDB_API_KEY;
+
     public static final String IMAGE_BASE_URL =  "https://image.tmdb.org/t/p/w342/";
     public static final String POPULAR_PATH = "popular";
-    public static final String FAVOURITE_SORT_ORDER = "favourites";
-    public static final String API_KEY = BuildConfig.THEMOVIEDB_API_KEY;
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
+
+    public static final String YOUTUBE_INAGE_BASE_URL = "https://img.youtube.com/vi/";
+    public static final String YOUTUBE_SUFFIX_URL = "/0.jpg";
+
+    public static final String YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v=";
 }
