@@ -64,6 +64,7 @@ public class VideoLoader implements LoaderManager.LoaderCallbacks<ArrayList<Vide
             adapter.addData(data);
             adapter.notifyDataSetChanged();
             sController.hideEmptyVideosLayout();
+            sController.setFirstTrailerURL(data.get(0).getYoutubeKey());
         }
 
 

@@ -49,6 +49,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         this.mMainScreenUiController = uiController;
     }
 
+    public void setMoviesToTheAdapter(ArrayList<Movie> moviesToTheAdapter) {
+        this.mMovies = moviesToTheAdapter;
+    }
+
     // Simple interface to implement on main activity
     // to delegate the click on a movie
     public interface OnMovieClickedInterface{

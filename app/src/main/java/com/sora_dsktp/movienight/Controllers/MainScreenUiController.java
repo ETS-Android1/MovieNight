@@ -293,12 +293,12 @@ public class MainScreenUiController {
                 "Value of mFirstTimeFetch = " + FirstTimeFetch);
         // If we have internet and the Ui needs update and its the first time the user opens the app
         // the return true and set the mFirstTimeFetch variable to false.
-        if (isWeHaveInternet() && isUIneedsUpdate() && isFirstTimeFetch()) {
+        if (isWeHaveInternet() && UIneedsUpdate() && isFirstTimeFetch()) {
             setFirstTimeFetch(false);
             return true;
         }
         // If we wave internet and the UI needs  update then return true
-        else if (isUIneedsUpdate() && isWeHaveInternet()) return true;
+        else if (UIneedsUpdate() && isWeHaveInternet()) return true;
             // In any other case return false
         else return false;
     }
@@ -389,7 +389,7 @@ public class MainScreenUiController {
      *
      * @return true if the UI needs update otherwise false
      */
-    public boolean isUIneedsUpdate() {
+    public boolean UIneedsUpdate() {
         return UIneedsUpdate;
     }
 

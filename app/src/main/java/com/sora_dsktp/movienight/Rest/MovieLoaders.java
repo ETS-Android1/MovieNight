@@ -67,17 +67,18 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
 
         //If the list is not empty push the data
         //to the adapter and notify him
-        if(!data.isEmpty() && sController.UIneedsToBeUpdated())
+        if((!data.isEmpty()) && (sController.UIneedsToBeUpdated()))
         {
             // notify the adapter
-            moviesAdapterAdapter.pushTheDataToTheAdapter(data);
+//            moviesAdapterAdapter.pushTheDataToTheAdapter(data);
+            moviesAdapterAdapter.setMoviesToTheAdapter(data);
             moviesAdapterAdapter.notifyDataSetChanged();
-            // restore the scroll poistion if a device configuration occured
+
+            // restore the scroll position if a device configuration occured
             sController.restoreScrollPostition();
         }
         // hide the loading indicator
         sController.hideLoadingIndicator();
-        sController.setLoading(false);
         sController.setUIneedsUpdate(false);
         Log.d(DEBUG_TAG,"We got a response from the API");
     }
@@ -92,7 +93,8 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
 
     private static class MyAsyncLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
-        private ArrayList<Movie> mMovies = null;
+        private ArrayList<Movie> mMovies = new ArrayList<>();
+        private boolean updateCache = false;
 
         public MyAsyncLoader(Context context)
         {
@@ -107,16 +109,17 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
          */
         @Override
         protected void onStartLoading() {
-            if (mMovies != null)
+            Log.d(DEBUG_TAG,"onStartLoading called....");
+            if (!mMovies.isEmpty())
             {
-                Log.d(DEBUG_TAG,"Delivering the results.....");
+//                Log.d(DEBUG_TAG,"Delivering the results.....");
                 deliverResult(mMovies);
                 sController.setLoading(false);
                 sController.hideLoadingIndicator();
             }
             else
             {
-                Log.d(DEBUG_TAG,"Executing the loadInBackground method again...");
+//                Log.d(DEBUG_TAG,"Executing the loadInBackground method again...");
                 sController.setLoading(true);
                 sController.showLoadingIndicator();
                 forceLoad();
@@ -129,13 +132,16 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
          * @return the ArrayList<Movie> containing the movies from the API
          */
         @Override
-        public ArrayList<Movie> loadInBackground()
+        public synchronized ArrayList<Movie> loadInBackground()
         {
+            Log.d(DEBUG_TAG,"loadInBackground called....");
             ArrayList<Movie> movies = MovieClient.makeRequest(sController.getSortOrder(), sController.getPageToIndex());
             if(!movies.isEmpty())
             {
                 //increment the page to index on the next call
                 sController.incrementAPIindex();
+                sController.setLoading(false);
+                updateCache = true;
             }
             return movies;
         }
@@ -145,13 +151,22 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
          *
          * @param data The result of the load
          */
-        public void deliverResult(ArrayList<Movie> data)
+        @Override
+        public synchronized void deliverResult(ArrayList<Movie> data)
         {
             //Caching the movies...
-            Log.d(DEBUG_TAG,"Caching the results.....");
-            mMovies = sController.getAdapter().getData();
-            super.deliverResult(data);
+//            Log.d(DEBUG_TAG,"Caching the results.....");
+            Log.d(DEBUG_TAG,"deliverResult called....");
+//            mMovies = sController.getAdapter().getData();
+            if(updateCache)
+            {
+                mMovies.addAll(data);
+                updateCache = false;
+            }
+            super.deliverResult(mMovies);
         }
+
+
 
 
     }

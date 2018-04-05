@@ -37,6 +37,7 @@ import com.sora_dsktp.movienight.R;
 import com.sora_dsktp.movienight.Rest.ReviewLoader;
 import com.sora_dsktp.movienight.Rest.VideoLoader;
 import com.sora_dsktp.movienight.Screens.DetailsScreen;
+import com.sora_dsktp.movienight.Utils.Constants;
 
 import static com.sora_dsktp.movienight.BroadcastReceivers.DbBroadcastReceiver.ACTION_DATABASE_CHANGED;
 
@@ -53,6 +54,9 @@ public class DetailScreenUiController
     private boolean mIsFavourite = false;
     private final String DEBUG_TAG = getClass().getSimpleName();
 
+
+
+    private String mFirstMovieVideo = "";
 
 
     /**
@@ -155,6 +159,8 @@ public class DetailScreenUiController
     {
         mDetailScreen.findViewById(R.id.empty_reviews_layout).setVisibility(View.VISIBLE);
     }
+
+
 
 
     /**
@@ -283,5 +289,18 @@ public class DetailScreenUiController
 
     public void setReviewAdapter(ReviewAdapter mReviewAdapter) {
         this.mReviewAdapter = mReviewAdapter;
+    }
+
+    /**
+     * Getter method
+     * @return
+     */
+    public String getFirstTrailerURL()
+    {
+        return Constants.YOUTUBE_VIDEO_URL + this.mFirstMovieVideo;
+    }
+
+    public void setFirstTrailerURL(String mFirstMovieVideo) {
+        this.mFirstMovieVideo = mFirstMovieVideo;
     }
 }

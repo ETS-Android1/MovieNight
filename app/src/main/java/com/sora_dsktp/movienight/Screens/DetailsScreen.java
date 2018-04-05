@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sora_dsktp.movienight.Adapters.ReviewAdapter;
 import com.sora_dsktp.movienight.Adapters.VideoAdapter;
@@ -143,6 +145,18 @@ public class DetailsScreen extends AppCompatActivity implements VideoAdapter.vid
                 //Share button clicked
 
                 //Create an intent and share the first movie trailer if it exists
+                if(TextUtils.isEmpty(mController.getFirstTrailerURL()))
+                {
+                    Toast.makeText(this,"No video to share found",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, mController.getFirstTrailerURL());
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
 
                 return true;
             }
