@@ -25,7 +25,8 @@ import com.sora_dsktp.movienight.R;
 
 /**
  * This class extends the BroadcastReceiver class and overrides the onReceive method
- * which is called when a CONNECTIVITY_CHANGE action is broadcasted through the application
+ * which is called when a CONNECTIVITY_CHANGE action is broadcasted through the application.If
+ * there is need to update the UI we make a call to the API to request data.
  */
 public class InternetBroadcastReceiver  extends BroadcastReceiver
 {
@@ -52,9 +53,12 @@ public class InternetBroadcastReceiver  extends BroadcastReceiver
             if(activeNetwork.isConnected())
             {
                 mMainScreenUiController.setWeHaveInternet(true);
+                //We have internet so we can make a request for the movies
+                //but only if the sort order is not "Favourite"
                 if(!mMainScreenUiController.favouritesMode())
                 {
                     Log.d(DEBUG_TAG,"Fetching movies from the broadcast receiver on receive method.....");
+                    //Sort order is top_movies/popular so make the request
                     mMainScreenUiController.fetchMovies(false,false);
                 }
             }

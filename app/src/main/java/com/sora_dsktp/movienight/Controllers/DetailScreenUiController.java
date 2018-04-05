@@ -54,9 +54,7 @@ public class DetailScreenUiController
     private boolean mIsFavourite = false;
     private final String DEBUG_TAG = getClass().getSimpleName();
 
-
-
-    private String mFirstMovieVideo = "";
+    private String mFirstMovieVideo = ""; // This field is used to store the YoutubeURL of the first trailer
 
 
     /**
@@ -105,21 +103,37 @@ public class DetailScreenUiController
         mQueryHelper.startDelete(-1,null,DatabaseContract.FavouriteMovies.CONTENT_URI,selection,selectionArgs);
     }
 
+    /**
+     * This method creates a loader responsible for making a request in a background
+     * thread to the Movies DB API for getting the reviews for a movie
+     * @param mMovieClicked The Movie object that was clicked
+     */
     public void getMovieReviews(Movie mMovieClicked)
     {
+        //get the id of the movie
         int movieID = mMovieClicked.getMovieID();
         LoaderManager loaderManager = mDetailScreen.getSupportLoaderManager();
+        //add the id of the movie into a bundle
         Bundle bundle = new Bundle();
         bundle.putInt(mDetailScreen.getString(R.string.MOVIE_ID_BUNDLE_KEY),movieID);
+        //start the loader and send the id of the movie inside the bundle
         loaderManager.initLoader(3,bundle,new ReviewLoader(mDetailScreen,this));
     }
 
+    /**
+     * This method creates a loader that make's a request to the Movies DB API in a
+     * background thread requesting the videos related to the movie that was clicked
+     * @param mMovieClicked The Movie object that was clicked
+     */
     public void getMovieVideos(Movie mMovieClicked)
     {
+        //get the movie id
         int movieID = mMovieClicked.getMovieID();
         LoaderManager loaderManager = mDetailScreen.getSupportLoaderManager();
+        //put the movie id inside a bundle object
         Bundle bundle = new Bundle();
         bundle.putInt(mDetailScreen.getString(R.string.MOVIE_ID_BUNDLE_KEY),movieID);
+        //start the loader passing the bundle alongside.
         loaderManager.initLoader(2,bundle,new VideoLoader(mDetailScreen,this));
     }
 
@@ -173,6 +187,12 @@ public class DetailScreenUiController
             super(cr);
         }
 
+        /**
+         * This method is called when a query has been completed
+         * @param token This is used for identification
+         * @param cookie This is a object passed from startQuery method
+         * @param cursor The Cursor object holding the data from the query
+         */
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
             super.onQueryComplete(token, cookie, cursor);
@@ -188,6 +208,12 @@ public class DetailScreenUiController
 
         }
 
+        /**
+         * This method is called when a Insert query to the database is completed.
+         * @param token This is used for identification
+         * @param cookie This is a object passed from startInsert
+         * @param uri The new Uri pointing the path that was inserted
+         */
         @Override
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
             super.onInsertComplete(token, cookie, uri);
@@ -203,6 +229,12 @@ public class DetailScreenUiController
             }
         }
 
+        /**
+         * This method is called when a delete query to the database is completed.
+         * @param token This is used for identification
+         * @param cookie This is a object that was passed from startDelete method
+         * @param itemsDeleted The number of rows that the query deleted from the database
+         */
         @Override
         protected void onDeleteComplete(int token, Object cookie, int itemsDeleted) {
             super.onDeleteComplete(token, cookie, itemsDeleted);
@@ -275,31 +307,51 @@ public class DetailScreenUiController
         return mIsFavourite;
     }
 
+    /**
+     * Setter method for the VideoAdapter variable
+     * @param mVideoAdapter The videoAdapter object
+     */
     public void setVideoAdapter(VideoAdapter mVideoAdapter) {
         this.mVideoAdapter = mVideoAdapter;
     }
 
+    /**
+     * Getter method for the VideoAdapter variable
+     * @return The videoAdapter object
+     */
     public VideoAdapter getVideoAdapter() {
         return mVideoAdapter;
     }
 
+    /**
+     * Getter method for the variable ReviewAdapter
+     * @return The ReviewAdapter object
+     */
     public ReviewAdapter getReviewAdapter() {
         return mReviewAdapter;
     }
 
+    /**
+     * Setter method for the ReviewAdapter variable
+     * @param mReviewAdapter The ReviewAdapter object
+     */
     public void setReviewAdapter(ReviewAdapter mReviewAdapter) {
         this.mReviewAdapter = mReviewAdapter;
     }
 
     /**
-     * Getter method
-     * @return
+     * Getter method for the FirstMovieVideo variable
+     * @return the String object mFirstMovieVideo
      */
     public String getFirstTrailerURL()
     {
         return Constants.YOUTUBE_VIDEO_URL + this.mFirstMovieVideo;
     }
 
+    /**
+     * Setter method for the FirstMovieVideo variable
+     * @param mFirstMovieVideo The FirstMovieVideo String object
+     */
     public void setFirstTrailerURL(String mFirstMovieVideo) {
         this.mFirstMovieVideo = mFirstMovieVideo;
     }
