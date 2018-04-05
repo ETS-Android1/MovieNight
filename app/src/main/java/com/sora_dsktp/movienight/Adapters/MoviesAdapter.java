@@ -79,10 +79,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
                 if(mMainScreenUiController.favouritesMode())
                 {
                     mMainScreenUiController.showEmptyFavouriteMoviesLayout();
+                    mMainScreenUiController.hideErrorLayout();
                 }
                 else
                 {
                     mMainScreenUiController.showErrorLayout();
+                    mMainScreenUiController.hideEmptyFavouriteMoviesLayout();
                 }
             }
             // the itemCount of the recyclerView is >0 so , hide the layout's

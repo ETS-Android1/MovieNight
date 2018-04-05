@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Rest;
+package com.sora_dsktp.movienight.Rest.Loaders;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.util.Log;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
 import com.sora_dsktp.movienight.Controllers.MainScreenUiController;
 import com.sora_dsktp.movienight.Model.Movie;
+import com.sora_dsktp.movienight.Rest.MovieClient;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 
 import java.util.ArrayList;
@@ -23,6 +24,11 @@ import java.util.ArrayList;
  * and was last modified on 31/3/2018.
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
+ */
+
+/**
+ * Class implementing the LoadeCallbacks interface . We use this class to create and handle the
+ * data fetch from the API in a background thread
  */
 public  class MovieLoaders implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
@@ -70,7 +76,6 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
         if((!data.isEmpty()) && (sController.UIneedsToBeUpdated()))
         {
             // notify the adapter
-//            moviesAdapterAdapter.pushTheDataToTheAdapter(data);
             moviesAdapterAdapter.setMoviesToTheAdapter(data);
             moviesAdapterAdapter.notifyDataSetChanged();
 
@@ -90,7 +95,9 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
     }
 
 
-
+    /**
+     * Inner class extending the AsyncTaskLoader class
+     */
     private static class MyAsyncLoader extends AsyncTaskLoader<ArrayList<Movie>> {
 
         private ArrayList<Movie> mMovies = new ArrayList<>();
@@ -112,14 +119,14 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
             Log.d(DEBUG_TAG,"onStartLoading called....");
             if (!mMovies.isEmpty())
             {
-//                Log.d(DEBUG_TAG,"Delivering the results.....");
-                if(!isStarted()) deliverResult(mMovies);
+                Log.d(DEBUG_TAG,"Delivering the results.....");
+                if(!isStarted()) deliverResult(mMovies); // if the loader isn't running deliver the result's
                 sController.setLoading(false);
                 sController.hideLoadingIndicator();
             }
             else
             {
-//                Log.d(DEBUG_TAG,"Executing the loadInBackground method again...");
+                Log.d(DEBUG_TAG,"Executing the loadInBackground method again...");
                 sController.setLoading(true);
                 sController.showLoadingIndicator();
                 forceLoad();
@@ -140,8 +147,8 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
             {
                 //increment the page to index on the next call
                 sController.incrementAPIindex();
-                sController.setLoading(false);
-                updateCache = true;
+                sController.setLoading(false); // results from background thread is here so set the loading variable to false
+                updateCache = true; // we need to update our cache variable cause we got new data
             }
             return movies;
         }
@@ -155,9 +162,8 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
         public synchronized void deliverResult(ArrayList<Movie> data)
         {
             //Caching the movies...
-//            Log.d(DEBUG_TAG,"Caching the results.....");
-            Log.d(DEBUG_TAG,"deliverResult called....");
-//            mMovies = sController.getAdapter().getData();
+            Log.d(DEBUG_TAG,"Caching the results.....");
+            //if there is need we update the cache list
             if(updateCache)
             {
                 mMovies.addAll(data);

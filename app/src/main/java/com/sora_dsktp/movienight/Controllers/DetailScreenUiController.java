@@ -30,12 +30,11 @@ import android.widget.Toast;
 
 import com.sora_dsktp.movienight.Adapters.ReviewAdapter;
 import com.sora_dsktp.movienight.Adapters.VideoAdapter;
-import com.sora_dsktp.movienight.Model.DatabaseContract;
+import com.sora_dsktp.movienight.Model.DAO.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
-import com.sora_dsktp.movienight.Model.Review;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.ReviewLoader;
-import com.sora_dsktp.movienight.Rest.VideoLoader;
+import com.sora_dsktp.movienight.Rest.Loaders.ReviewLoader;
+import com.sora_dsktp.movienight.Rest.Loaders.VideoLoader;
 import com.sora_dsktp.movienight.Screens.DetailsScreen;
 import com.sora_dsktp.movienight.Utils.Constants;
 
@@ -250,7 +249,7 @@ public class DetailScreenUiController
                 Intent intent = new Intent(ACTION_DATABASE_CHANGED);
                 // put in extra the movie object to delete with the adapter position of the movie
                 // to the recyclerView.
-                intent.putExtra(mDetailScreen.getResources().getString(R.string.EXTRA_MOVIE_TO_DEL_OBJ), mDetailScreen.getmMovieClicked());
+                intent.putExtra(mDetailScreen.getResources().getString(R.string.EXTRA_MOVIE_TO_DEL_OBJ), mDetailScreen.getMovieClicked());
                 intent.putExtra(mDetailScreen.getResources().getString(R.string.EXTRA_KEY_MOVIE_ID), mDetailScreen.getmMovieAdapterPosition());
                 // send a broadcast that the database has been changed
                 mDetailScreen.sendBroadcast(intent);
@@ -268,7 +267,6 @@ public class DetailScreenUiController
         final String [] SelectionArgs = new String[]{movieClicked.getMovieTitle()};
         // execute the query in a background thread
         mQueryHelper.startQuery(1,movieClicked, DatabaseContract.FavouriteMovies.CONTENT_URI,null,selection,SelectionArgs,null);
-
     }
 
 

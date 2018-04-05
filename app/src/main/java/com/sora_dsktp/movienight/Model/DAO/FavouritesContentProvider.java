@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Model;
+package com.sora_dsktp.movienight.Model.DAO;
 
 import android.annotation.SuppressLint;
 import android.content.ContentProvider;
@@ -24,6 +24,12 @@ import android.util.Log;
  * and was last modified on 23/3/2018.
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
+ */
+
+
+/**
+ * This class extends the ContentProvider class to create a Content Provider helper
+ * class for accessing our local SQLite database.It has methods for CRUD operation's
  */
 public class FavouritesContentProvider extends ContentProvider {
 
@@ -85,21 +91,6 @@ public class FavouritesContentProvider extends ContentProvider {
                  }
                 return resultCursor;
             }
-            case FAV_MOVIE_WITH_ID:
-            {
-                Log.d(DEBUG_TAG,"Querying the database by id....");
-
-                try
-                {
-                    resultCursor = db.query(DatabaseContract.FavouriteMovies.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
-                    Log.d(DEBUG_TAG,"Column row = " + resultCursor.getCount());
-                }
-                catch (SQLException e)
-                {
-                    e.printStackTrace();
-                }
-                return resultCursor;
-            }
             default:
             {
                 throw new UnsupportedOperationException("Unknown Uri = " + uri);
@@ -147,6 +138,7 @@ public class FavouritesContentProvider extends ContentProvider {
         return null;
     }
 
+
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs)
     {
@@ -170,21 +162,6 @@ public class FavouritesContentProvider extends ContentProvider {
                 }
                 return rowsDeleted;
             }
-            case FAV_MOVIE_WITH_ID:
-            {
-                Log.d(DEBUG_TAG,"Deleting items in  the database by id....");
-
-                try
-                {
-                    rowsDeleted  = db.delete(DatabaseContract.FavouriteMovies.TABLE_NAME,selection, selectionArgs);
-                    Log.d(DEBUG_TAG,"Deleted items  count = " + rowsDeleted);
-                }
-                catch (SQLException e)
-                {
-                    e.printStackTrace();
-                }
-                return rowsDeleted;
-            }
             default:
             {
                 throw new UnsupportedOperationException("Unknown uri = + " + uri);
@@ -192,6 +169,14 @@ public class FavouritesContentProvider extends ContentProvider {
         }
     }
 
+    /**
+     * Update operation
+     * @param uri the Uri pointing to the database path
+     * @param values The ContentValues object containing the new(updated) values
+     * @param selection The selection of the columns
+     * @param selectionArgs The selection arguments of the Columns
+     * @return The row's affected the update
+     */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;

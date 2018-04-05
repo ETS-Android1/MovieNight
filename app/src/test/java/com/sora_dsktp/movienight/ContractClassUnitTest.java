@@ -1,13 +1,9 @@
-/*
- * Copyright © 2018 by Georgios Kostogloudis
- * All rights reserved.
- */
 
 package com.sora_dsktp.movienight;
 
 import android.provider.BaseColumns;
 
-import com.sora_dsktp.movienight.Model.DatabaseContract;
+import com.sora_dsktp.movienight.Model.DAO.DatabaseContract;
 
 import org.junit.Test;
 
@@ -18,6 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * This Test class was a part of the Lesson "Storing Data in SQlite of Udacity Nanodegree programm
+ *
+ *
  * Local unit test, which will execute on the development machine (host).
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>

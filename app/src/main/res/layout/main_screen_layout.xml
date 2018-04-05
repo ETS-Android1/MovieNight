@@ -21,7 +21,7 @@
 
 
     <!--No data to show layout-->
-    <include layout="@layout/empty_dataset_view" />
+    <include layout="@layout/empty_movie_layout" />
 
     <!--No favourite movies layout-->
     <include layout="@layout/empy_favourites_layout"/>

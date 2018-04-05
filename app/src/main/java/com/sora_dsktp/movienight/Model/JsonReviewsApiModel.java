@@ -13,6 +13,11 @@ import java.util.ArrayList;
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class is being used to describe
+ * the json response schema from the API request
+ */
 public class JsonReviewsApiModel
 {
     private int page;

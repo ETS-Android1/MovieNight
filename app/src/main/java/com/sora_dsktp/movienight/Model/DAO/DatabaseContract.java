@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Model;
+package com.sora_dsktp.movienight.Model.DAO;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -16,6 +16,11 @@ import com.sora_dsktp.movienight.BuildConfig;
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class define's the contract between the content provider and the local
+ * SQlite database.
+ */
 public class DatabaseContract
 {
     //Log tag for LogCat usage
@@ -25,7 +30,7 @@ public class DatabaseContract
 
 
     // The authority, which is how your code knows which Content Provider to access
-    public static final String AUTHORITY = "com.sora_dsktp.movienight.Model.FavouritesContentProvider";
+    public static final String AUTHORITY = "com.sora_dsktp.movienight.Model.DAO.FavouritesContentProvider";
 
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
@@ -38,8 +43,8 @@ public class DatabaseContract
     public static final class FavouriteMovies implements BaseColumns
     {
 
-        // TaskEntry content URI = base content URI + path
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVOURITE_MOVIES).build();
+        //  content URI = base content URI + path
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVOURITE_MOVIES).build(); // This URI defines the URI to fetch movies from the database
 
         public static final String TABLE_NAME = "fav_movies";
         public static final String COLUMN_MOVIE_TITLE = "movie_title";

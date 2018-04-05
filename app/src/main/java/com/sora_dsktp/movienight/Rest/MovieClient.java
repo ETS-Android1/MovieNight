@@ -32,6 +32,11 @@ import static com.sora_dsktp.movienight.Utils.Constants.BASE_URL;
  UDACITY ND programm.
  */
 
+/**
+ * This class has a inner Retrofit interface to define the call to the API.
+ * It also has a static method building a retrofit client and making the call to
+ * the server synchronously
+ */
 public class MovieClient
 {
 
@@ -71,7 +76,7 @@ public class MovieClient
          {
              Log.d(DEBUG_TAG,"Got the response inside MovieClient.java");
              Response<JsonMoviesApiModel> moviesApiModelResponse = call.execute();
-             if(moviesApiModelResponse.isSuccessful())
+             if(moviesApiModelResponse.isSuccessful()) //Returns true if code() is in the range [200..300)
              {
                  // the request hasn't any errors so save the
                  // results inside movie list

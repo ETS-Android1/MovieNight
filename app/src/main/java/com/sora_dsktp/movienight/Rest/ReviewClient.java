@@ -30,12 +30,21 @@ import static com.sora_dsktp.movienight.Utils.Constants.BASE_URL;
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
  */
+
+/**
+ * This class has a inner Retrofit interface to define the call to the API.
+ * It also has a static method building a retrofit client and making the call to
+ * the server synchronously
+ */
 public class ReviewClient
 {
     //Log tag for LogCat usage
     private static  final String DEBUG_TAG = "#ReviewClient.java";
 
 
+    /**
+     * This interface defines a retrofit method using annotations
+     */
     private interface MovieReviewRetrofit
     {
         //"id" is the id of the movie to get a review
@@ -66,10 +75,9 @@ public class ReviewClient
         try
         {
             Response<JsonReviewsApiModel> apiResponse = call.execute();
-            int apiCode = apiResponse.code();
-            if(apiCode == 200)
+            if(apiResponse.isSuccessful()) //Returns true if code() is in the range [200..300)
             {
-                //Successfull response
+                //Successful response
                  reviewArrayList = apiResponse.body().getResults();
                 return reviewArrayList;
             }

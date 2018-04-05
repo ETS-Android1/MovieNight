@@ -91,7 +91,6 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
             // set the following fields to the UI controller for later use in onLoadFinished() method of the MovieLoader
             mController.setRecyclerView(mRvMovies);
             mController.setListState(listState);
-
         }
 
     }

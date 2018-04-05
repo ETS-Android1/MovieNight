@@ -1,7 +1,4 @@
-/*
- * Copyright © 2018 by Georgios Kostogloudis
- * All rights reserved.
- */
+
 
 package com.sora_dsktp.movienight;
 
@@ -14,8 +11,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 
-import com.sora_dsktp.movienight.Model.DatabaseContract;
-import com.sora_dsktp.movienight.Model.FavouritesDbHelper;
+import com.sora_dsktp.movienight.Model.DAO.DatabaseContract;
+import com.sora_dsktp.movienight.Model.DAO.FavouritesDbHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +23,10 @@ import java.lang.reflect.Field;
 import static org.junit.Assert.*;
 
 /**
+ * This Test class was a part of the Lesson "Storing Data in SQlite of Udacity Nanodegree programm
+ *
+ *
+ *
  * Instrumentation test, which will execute on an Android device.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>

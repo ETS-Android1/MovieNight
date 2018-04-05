@@ -18,10 +18,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.sora_dsktp.movienight.Model.DatabaseContract;
+import com.sora_dsktp.movienight.Model.DAO.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.MovieLoaders;
+import com.sora_dsktp.movienight.Rest.Loaders.MovieLoaders;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 import com.sora_dsktp.movienight.Utils.Constants;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
@@ -143,10 +143,10 @@ public class MainScreenUiController {
         }
 
         /**
-         *
-         * @param token
-         * @param cookie
-         * @param cursor
+         * This method is called when a query has been completed
+         * @param token This is used for identification
+         * @param cookie This is a object passed from startQuery method
+         * @param cursor The Cursor object holding the data from the query
          */
         @Override
         protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
@@ -264,15 +264,16 @@ public class MainScreenUiController {
             //show the loading indicator indicating
             //that data is being loaded
             this.showLoadingIndicator();
-            //start Loaders
+            //if the load JUST need's to start
             if(!forceUpdate && !restartLoader )loaderManager.initLoader(1,null,new MovieLoaders(mainScreen,this));
 
-
+            //if the loader need's to be forced
             if(forceUpdate)
             {
                 Log.d(DEBUG_TAG,"Loader is force loaded....");
                 if(loaderManager.getLoader(1) != null )  loaderManager.getLoader(1).forceLoad();
             }
+            //if the loader need's to restart
             if(restartLoader)
             {
                 Log.d(DEBUG_TAG,"Loader is restarted..");

@@ -30,6 +30,7 @@
 
     <!--Toolbar Action Strings-->
     <string name="sort_order_toolbar_action">Sort Order</string>
+    <string name="share_video_action">Share</string>
 
     <!--ImageView Content Descpription-->
     <string name="movie_poster_content_description">This is a movie poster</string>
@@ -39,6 +40,12 @@
     <string name="tv_movie_rating_label_text">Rating:</string>
     <string name="tv_release_date_label_text">Release Date:</string>
     <string name="tv_movie_description_label_text">Description</string>
+    <string name="tv_reviews_label">Reviews</string>
+    <string name="tv_videos_label">Related Videos</string>
+    <string name="review_author_text">by</string>
+    <string name="no_data_content_desc">Image indicating that no data are available</string>
+    <string name="movie_thumbnail_youtube_content_desc">This is a thumbnail image of the video on youtube for this movie</string>
+    <string name="play_arrow_content_desc">This drawable show a play video arrow indicating that the image is a video</string>
 
     <!--Passing Intent to details Activity-->
     <string name="EXTRA_KEY_MOVIE_OBJ">movie_clicked</string>
@@ -49,17 +56,18 @@
     <string name="empty_view_message">Movie list is empty , try connecting to the internet</string>
     <string name="no_connection_message">No Internet Connection</string>
     <string name="no_favourite_movie_message">You haven\'t any favourite movie . Try adding a new one by tapping the hear button on a movie.</string>
-    <string name="tv_reviews_label">Reviews</string>
-    <string name="tv_videos_label">Related Videos</string>
-    <string name="restore_scroll_boolean">restore_scorll_position</string>
-    <string name="list_state">ListState</string>
-    <string name="share_video_action">Share</string>
-    <string name="movie_review_sample_text">This movie was excellent. The plot was mind - blowing . It was one of the best movies I\'ve seen the last year . I really hope it will get a sequel . I think that the cast starring had to do much for the success of the movie . They was very dynamic and passionate and they got into the skin of their character</string>
-    <string name="movie_review_sample_author_text">George Kostogloudis</string>
-    <string name="review_author_text">by</string>
     <string name="no_videos_found_message">No video\'s found for this movie</string>
     <string name="no_reviews_message">There are no review\'s for this movie</string>
+
+    <!--Bundle Strings-->
+    <string name="restore_scroll_boolean">restore_scorll_position</string>
+    <string name="list_state">ListState</string>
     <string name="MOVIE_ID_BUNDLE_KEY">movie_id</string>
+
+    <!--Testing strings-->
+    <string name="movie_review_sample_text">This movie was excellent. The plot was mind - blowing . It was one of the best movies I\'ve seen the last year . I really hope it will get a sequel . I think that the cast starring had to do much for the success of the movie . They was very dynamic and passionate and they got into the skin of their character</string>
+    <string name="movie_review_sample_author_text">George Kostogloudis</string>
+
 
 
 </resources>

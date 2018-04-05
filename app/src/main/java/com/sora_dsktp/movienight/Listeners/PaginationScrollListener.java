@@ -39,7 +39,6 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
             // if there is nothing loading from the API
             if (!isLoading())
             {
-
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
                     loadMoreItems();
                 }

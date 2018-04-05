@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Model;
+package com.sora_dsktp.movienight.Model.DAO;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +15,10 @@ import android.util.Log;
  * and was last modified on 23/3/2018.
  * The name of the project is MovieNight and it was created as part of
  * UDACITY ND programm.
+ */
+
+/**
+ * Helper class that create's the local SQlite database.
  */
 public class FavouritesDbHelper extends SQLiteOpenHelper {
 
