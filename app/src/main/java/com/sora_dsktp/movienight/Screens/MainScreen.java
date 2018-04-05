@@ -131,13 +131,12 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
                 // check if the app is
                 // loading still data
                 // from a previous request
+                // and if we have internet and then make a force load
                 if(!isLoading()&& !mController.favouritesMode())
                 {
                     // set the variable to true
                     // so we can fetch the movies
                     mController.setUIneedsUpdate(true);
-                    //show the loading indicator
-                    mController.showLoadingIndicator();
                     // pass as a parameter the page to index the API
                     Log.d(DEBUG_TAG,"fetching movies for load more method");
                     mController.fetchMovies(true,false);
