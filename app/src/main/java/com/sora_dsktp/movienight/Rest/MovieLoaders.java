@@ -113,7 +113,7 @@ public  class MovieLoaders implements android.support.v4.app.LoaderManager.Loade
             if (!mMovies.isEmpty())
             {
 //                Log.d(DEBUG_TAG,"Delivering the results.....");
-                deliverResult(mMovies);
+                if(!isStarted()) deliverResult(mMovies);
                 sController.setLoading(false);
                 sController.hideLoadingIndicator();
             }
