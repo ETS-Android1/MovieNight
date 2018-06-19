@@ -116,7 +116,7 @@ public class DetailsScreen extends AppCompatActivity implements VideoAdapter.vid
         mMovieAdapterPosition = passedIntent.getIntExtra(getResources().getString(R.string.EXTRA_KEY_MOVIE_ID),-1);
         Log.d(DEBUG_TAG, mMovieClicked.toString());
         // Set the values to the appropriate fields
-        Picasso.with(this).load(IMAGE_BASE_URL + mMovieClicked.getImagePath()).into(mPosterImageView);
+        Picasso.get().load(IMAGE_BASE_URL + mMovieClicked.getImagePath()).into(mPosterImageView);
         Log.d(DEBUG_TAG,"Movie title = " + mMovieClicked.getMovieTitle());
         String movieRating = String.valueOf(mMovieClicked.getMovieRating()) + "/10";
         mRatingTextView.setText(movieRating);

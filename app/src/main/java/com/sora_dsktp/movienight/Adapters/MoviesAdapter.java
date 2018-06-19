@@ -190,7 +190,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         // Set item views based on your views and data model
         holder.mMovieTitle.setText(movie.getMovieTitle());
-        Picasso.with(mContext).load(IMAGE_BASE_URL+movie.getImagePath()).into(holder.mMoviePoster);
+        Picasso.get().load(IMAGE_BASE_URL+movie.getImagePath()).into(holder.mMoviePoster);
     }
 
     /**

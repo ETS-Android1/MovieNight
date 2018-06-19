@@ -92,7 +92,7 @@ public class VideoAdapter extends Adapter<VideoAdapter.MyVideoHolder> {
     {
         Video video = mVideoList.get(position);
         Log.d(DEBUG_TAG,"Binding item with the followin url :" + YOUTUBE_INAGE_BASE_URL+video.getYoutubeKey()+YOUTUBE_SUFFIX_URL);
-        Picasso.with(mContext).load(YOUTUBE_INAGE_BASE_URL+video.getYoutubeKey()+YOUTUBE_SUFFIX_URL).into(holder.videoImage);
+        Picasso.get().load(YOUTUBE_INAGE_BASE_URL+video.getYoutubeKey()+YOUTUBE_SUFFIX_URL).into(holder.videoImage);
     }
 
     /**
