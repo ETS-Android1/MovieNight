@@ -16,7 +16,12 @@ about the movie clicked
 - Favourite mode for offline usage
 
 
-## Application Screenshots ( **coming soon**)
+## Application Screenshots
+
+<img src="images/movie_app_photo_1.png" width="320">
+<img src="images/movie_app_photo_2.png" width="320">
+<img src="images/movie_app_photo_3.png" width="320">
+<img src="images/movie_app_photo_4.png" width="320">
 
 
 
