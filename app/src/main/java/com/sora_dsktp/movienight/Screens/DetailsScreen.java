@@ -207,11 +207,11 @@ public class DetailsScreen extends AppCompatActivity implements VideoAdapter.vid
 
                 return true;
             }
-            default:
-            {
-                return false;
-            }
+            case android.R.id.home:
+                supportFinishAfterTransition();
+                return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

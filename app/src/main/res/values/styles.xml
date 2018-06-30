@@ -3,7 +3,7 @@
   ~ All rights reserved.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat">
@@ -11,6 +11,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--Animation Needed attribute -->
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <!--Preference Style-->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>

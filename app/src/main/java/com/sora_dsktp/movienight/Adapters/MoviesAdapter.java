@@ -7,6 +7,7 @@ package com.sora_dsktp.movienight.Adapters;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,7 +57,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     // Simple interface to implement on main activity
     // to delegate the click on a movie
     public interface OnMovieClickedInterface{
-         void onMovieClicked(int moviePosition,Movie movie);
+         void onMovieClicked(int moviePosition,Movie movie,CardView ivMovie);
     }
 
     /**
@@ -248,7 +249,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         public void onClick(View v)
         {
             // Sent the movie clicked via the listener
-            mClickListener.onMovieClicked(getAdapterPosition(),mMovies.get(getAdapterPosition()));
+            mClickListener.onMovieClicked(getAdapterPosition(),mMovies.get(getAdapterPosition()), (CardView) v);
         }
     }
 

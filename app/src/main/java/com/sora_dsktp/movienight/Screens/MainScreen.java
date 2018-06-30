@@ -13,13 +13,17 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.sora_dsktp.movienight.BroadcastReceivers.InternetBroadcastReceiver;
 import com.sora_dsktp.movienight.Model.Movie;
@@ -299,17 +303,21 @@ public class MainScreen extends AppCompatActivity implements SharedPreferences.O
      * with the appropriate data
      * @param moviePosition adapter position clicked
      * @param movieClicked Movie object to send in details Activity
+     * @param ivMovie The ImageView object within RecyclerView
      */
     @Override
-    public void onMovieClicked(int moviePosition,Movie movieClicked) {
+    public void onMovieClicked(int moviePosition, Movie movieClicked, CardView ivMovie) {
         //Start the activity containing
         //the movie user clicked from the list
         Intent openDetailScreen = new Intent(getApplicationContext(), DetailsScreen.class);
         if(movieClicked == null) Log.e(DEBUG_TAG,"Movie is empty ");
         Log.d(DEBUG_TAG,movieClicked.toString());
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.  makeSceneTransitionAnimation(this, (View)ivMovie, "movie_poster");
+
         openDetailScreen.putExtra(this.getString(R.string.EXTRA_KEY_MOVIE_OBJ),movieClicked);
         openDetailScreen.putExtra(getString(R.string.EXTRA_KEY_MOVIE_ID),moviePosition);
-        startActivity(openDetailScreen);
+        startActivity(openDetailScreen,options.toBundle());
     }
 
 }
