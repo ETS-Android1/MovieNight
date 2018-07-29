@@ -18,10 +18,7 @@ about the movie clicked
 
 ## Application Screenshots
 
-<img src="images/movie_app_photo_1.png" width="280">
-<img src="images/movie_app_photo_2.png" width="280">
-<img src="images/movie_app_photo_3.png" width="280">
-<img src="images/movie_app_photo_4.png" width="280">
+<img src="images/movie_app_photo_1.png" width="280"> <img src="images/movie_app_photo_2.png" width="280"> <img src="images/movie_app_photo_3.png" width="280"> <img src="images/movie_app_photo_4.png" width="280">
 
 
 
