@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Rest.Loaders;
+package com.sora_dsktp.movienight.Network.Loaders;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,10 +15,9 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 
 import com.sora_dsktp.movienight.Adapters.ReviewAdapter;
-import com.sora_dsktp.movienight.Adapters.VideoAdapter;
 import com.sora_dsktp.movienight.Controllers.DetailScreenUiController;
 import com.sora_dsktp.movienight.Model.Review;
-import com.sora_dsktp.movienight.Rest.ReviewClient;
+import com.sora_dsktp.movienight.Network.ReviewClient;
 import com.sora_dsktp.movienight.Screens.DetailsScreen;
 
 import java.util.ArrayList;

@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Rest;
+package com.sora_dsktp.movienight.Network;
 
 import android.util.Log;
 

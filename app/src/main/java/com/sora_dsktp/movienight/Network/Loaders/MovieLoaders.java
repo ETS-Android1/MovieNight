@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Rest.Loaders;
+package com.sora_dsktp.movienight.Network.Loaders;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.util.Log;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
 import com.sora_dsktp.movienight.Controllers.MainScreenUiController;
 import com.sora_dsktp.movienight.Model.Movie;
-import com.sora_dsktp.movienight.Rest.MovieClient;
+import com.sora_dsktp.movienight.Network.MovieClient;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 
 import java.util.ArrayList;

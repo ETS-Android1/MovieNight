@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
 import com.sora_dsktp.movienight.Model.DAO.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.Loaders.MovieLoaders;
+import com.sora_dsktp.movienight.Network.Loaders.MovieLoaders;
 import com.sora_dsktp.movienight.Screens.MainScreen;
 import com.sora_dsktp.movienight.Utils.Constants;
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;

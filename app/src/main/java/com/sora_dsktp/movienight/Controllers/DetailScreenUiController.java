@@ -33,8 +33,8 @@ import com.sora_dsktp.movienight.Adapters.VideoAdapter;
 import com.sora_dsktp.movienight.Model.DAO.DatabaseContract;
 import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
-import com.sora_dsktp.movienight.Rest.Loaders.ReviewLoader;
-import com.sora_dsktp.movienight.Rest.Loaders.VideoLoader;
+import com.sora_dsktp.movienight.Network.Loaders.ReviewLoader;
+import com.sora_dsktp.movienight.Network.Loaders.VideoLoader;
 import com.sora_dsktp.movienight.Screens.DetailsScreen;
 import com.sora_dsktp.movienight.Utils.Constants;
 

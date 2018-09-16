@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.sora_dsktp.movienight.Rest;
+package com.sora_dsktp.movienight.Network;
 
 import android.util.Log;
 
@@ -17,7 +17,6 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
