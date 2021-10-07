@@ -5,9 +5,8 @@
 
 package com.sora_dsktp.movienight.Listeners;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * This file created by Georgios Kostogloudis

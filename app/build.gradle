@@ -10,37 +10,33 @@ def sensitiveDataFile = file('../sensitive_data.txt')
 def Properties sensitiveData = new Properties()
 
 
-if (sensitiveDataFile.canRead())
-{
+if (sensitiveDataFile.canRead()) {
     // Read the sensitive data from file sensitive_data.txt
     sensitiveData.load(new FileInputStream(sensitiveDataFile))
 
-    if (sensitiveData != null)
-    {
-        if (sensitiveData.containsKey('theMovieDbApiKey'))
-        {
+    if (sensitiveData != null) {
+        if (sensitiveData.containsKey('theMovieDbApiKey')) {
             theMovieDbApiKey = sensitiveData['theMovieDbApiKey']
         }
     }
 }
 
 // In this section a reviewer can insert directly his own API KEY
-if (theMovieDbApiKey == noKeyFound)
-{
+if (theMovieDbApiKey == noKeyFound) {
     theMovieDbApiKey = '"REVIEWERS_THEMOVIEDB_API_KEY_GOES_HERE"'
 }
 // End of reading the sensitive data
 
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 30
     defaultConfig {
-        applicationId "com.sora_dsktp.movienight"
-        minSdkVersion 17
-        targetSdkVersion 27
+        applicationId 'com.georkost.movienight'
+        minSdkVersion 24
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         // add a Constant Field for the Movies DB API
         buildConfigField "String", "THEMOVIEDB_API_KEY", theMovieDbApiKey
     }
@@ -50,28 +46,34 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(11))
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:preference-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     //Used for mocking Android framework
-    testImplementation 'org.mockito:mockito-core:2.7.6'
+    testImplementation 'org.mockito:mockito-core:2.19.0'
     // You need that to mock the json objects
-    testImplementation 'org.json:json:20140107'
+    testImplementation 'org.json:json:20200518'
     //used for network call
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     // used for json parsing
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     // recyclerView dependency
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     // picasso dp for image loading
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.4.0'
 }

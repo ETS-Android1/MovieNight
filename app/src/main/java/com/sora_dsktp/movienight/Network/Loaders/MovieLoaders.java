@@ -7,8 +7,10 @@ package com.sora_dsktp.movienight.Network.Loaders;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
+
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 import android.util.Log;
 
 import com.sora_dsktp.movienight.Adapters.MoviesAdapter;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
  * Class implementing the LoadeCallbacks interface . We use this class to create and handle the
  * data fetch from the API in a background thread
  */
-public  class MovieLoaders implements android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+public  class MovieLoaders implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private static final String DEBUG_TAG = "#MovieLoaders.java";
     private static MainScreenUiController sController;

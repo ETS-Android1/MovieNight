@@ -6,7 +6,7 @@
 package com.sora_dsktp.movienight.Settings;
 
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceFragmentCompat;
 
 
 import com.sora_dsktp.movienight.R;

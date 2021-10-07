@@ -7,11 +7,9 @@ package com.sora_dsktp.movienight.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.os.ParcelableCompatCreatorCallbacks;
+import androidx.core.os.ParcelableCompatCreatorCallbacks;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 
 /**
  This file created by Georgios Kostogloudis on 23/2/2018

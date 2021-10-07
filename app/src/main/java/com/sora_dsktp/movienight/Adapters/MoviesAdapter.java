@@ -6,9 +6,9 @@
 package com.sora_dsktp.movienight.Adapters;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +21,6 @@ import com.sora_dsktp.movienight.Model.Movie;
 import com.sora_dsktp.movienight.R;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static com.sora_dsktp.movienight.Utils.Constants.IMAGE_BASE_URL;

@@ -9,3 +9,5 @@
 .externalNativeBuild
 #my sensitive data
 sensitive_data.txt
+.idea/*
+gradle.properties
